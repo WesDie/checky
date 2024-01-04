@@ -4,8 +4,8 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 import InputBox from "../components/ui/InputBox";
-import withAuth from "@/app/components/authCheck";
-import AuthCheck from "@/app/components/authCheck";
+import withAuth from "@/app/components/AuthCheck";
+import AuthCheck from "@/app/components/AuthCheck";
 
 const signUp = () => {
   const [errorSignin, setError] = useState<string | null>(null);

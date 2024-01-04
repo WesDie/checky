@@ -1,8 +1,9 @@
 import { cookies } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import AuthCheck from "@/app/components/authCheck";
+import AuthCheck from "@/app/components/AuthCheck";
 
 import type { Database } from "@/lib/database.types";
+import NavigationBar from "./components/NavigationBar";
 
 export default async function App() {
   const cookieStore = cookies();
@@ -21,6 +22,7 @@ export default async function App() {
 
   return (
     <AuthCheck>
+      <NavigationBar userid={session?.user?.id}></NavigationBar>
       <pre>
         {JSON.stringify(data, null, 2)}
         <form action="/auth/sign-out" method="post">

@@ -19,6 +19,7 @@ export default function AuthCheck({ children }: Props): JSX.Element {
       const {
         data: { session },
       } = await supabase.auth.getSession();
+
       if (!session) {
         if (
           typeof window !== "undefined" &&
