@@ -3,6 +3,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 
 import type { Database } from "@/lib/database.types";
 import NavigationBar from "./components/NavigationBar";
+import Topbar from "./components/TopBar";
 
 export default async function App() {
   const cookieStore = cookies();
@@ -21,13 +22,15 @@ export default async function App() {
 
   return (
     <main className="h-full w-full">
-      <NavigationBar userid={session?.user?.id}></NavigationBar>
-      <pre>
-        {JSON.stringify(data, null, 2)}
-        <form action="/auth/sign-out" method="post">
-          <button>Logout</button>
-        </form>
-      </pre>
+      <div className="h-full w-full flex">
+        <NavigationBar userid={session?.user?.id}></NavigationBar>
+        <div className="flex flex-col h-full w-full">
+          <Topbar type={"home"}></Topbar>
+        </div>
+      </div>
+      <form action="/auth/sign-out" method="post">
+        <button>Logout</button>
+      </form>
     </main>
   );
 }
