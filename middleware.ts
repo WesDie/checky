@@ -22,7 +22,11 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (!session) {
+  if (
+    !session &&
+    req.nextUrl.pathname !== "/signin" &&
+    req.nextUrl.pathname !== "/signup"
+  ) {
     return NextResponse.rewrite(new URL("/signin", req.url));
   }
 
