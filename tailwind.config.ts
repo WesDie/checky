@@ -11,6 +11,7 @@ const config: Config = {
       transparent: "transparent",
       white: "#FFF",
       dark: "#000",
+      red: "#cf0000",
       "primary-bg": "#1B1B1B",
       "secondary-bg": "#131313",
       "tertiary-bg": "#363636",

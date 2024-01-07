@@ -2,7 +2,7 @@ interface InputBoxProps {
   value: string;
   type: string;
   formattedValue: string;
-  autoComplete: string;
+  autoComplete?: string;
 }
 
 const InputBox = ({
