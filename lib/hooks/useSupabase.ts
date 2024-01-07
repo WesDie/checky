@@ -29,3 +29,14 @@ export async function useGetProfileData() {
 
   return data;
 }
+
+export async function useGetCategoriesData() {
+  const { supabase, session } = await checkUser();
+
+  const { data } = await supabase
+    .from("users_categories_folders")
+    .select()
+    .eq("userid", session?.user?.id ?? "");
+
+  return data;
+}
