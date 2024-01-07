@@ -2,11 +2,7 @@ import Avatar from "./Avatar";
 import { Cog6ToothIcon, HomeIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 
-type Props = {
-  userid?: string;
-};
-
-export default function NavigationBar({ userid }: Props) {
+export default function NavigationBar() {
   return (
     <div className="h-full w-fit py-4 px-2 flex flex-col bg-primary-bg">
       <div className="flex flex-col gap-4 px-1">
@@ -25,7 +21,7 @@ export default function NavigationBar({ userid }: Props) {
         </div>
       </div>
       <div className="mt-auto mx-auto flex flex-col gap-4">
-        <Avatar userid={userid}></Avatar>
+        <Avatar></Avatar>
         <Cog6ToothIcon className="opacity-100 hover:opacity-80 hover:cursor-pointer transition"></Cog6ToothIcon>
       </div>
     </div>

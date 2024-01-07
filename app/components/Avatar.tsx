@@ -1,30 +1,11 @@
-import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import type { Database } from "@/lib/database.types";
+import { useGetProfileData } from "@/lib/hooks/useSupabase";
 
 type Props = {
-  userid?: string;
   tooltip?: boolean;
 };
 
-export default async function Avatar({ userid }: Props) {
-  if (!userid) {
-    return <></>;
-  }
-
-  const cookieStore = cookies();
-  const supabase = createServerComponentClient<Database>({
-    cookies: () => cookieStore,
-  });
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  const { data } = await supabase
-    .from("user_profiles")
-    .select("profile_colors")
-    .eq("id", session?.user?.id ?? "");
+export default async function Avatar({ tooltip }: Props) {
+  const data = await useGetProfileData();
 
   const profileColors = data ? data[0]?.profile_colors?.split("||") : [];
   const gradientColors = profileColors
