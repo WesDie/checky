@@ -59,7 +59,7 @@ export async function useInsertNewCategory(
 
   if (existingCategory && existingCategory.length > 0) {
     return {
-      message: "Category name already exists please choose another name",
+      message: "Red: Category name already exists please choose another name",
     };
   }
 
@@ -72,8 +72,8 @@ export async function useInsertNewCategory(
   revalidatePath("/");
 
   if (error) {
-    return { message: "somthing went wrong" };
+    return { message: "Red: somthing went wrong" };
   }
 
-  return { message: "Category created successfully" };
+  return { message: "Green: Category created successfully" };
 }

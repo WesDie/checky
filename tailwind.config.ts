@@ -12,6 +12,7 @@ const config: Config = {
       white: "#FFF",
       dark: "#000",
       red: "#cf0000",
+      green: "#017d01",
       "primary-bg": "#1B1B1B",
       "secondary-bg": "#131313",
       "tertiary-bg": "#363636",

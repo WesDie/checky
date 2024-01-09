@@ -31,7 +31,7 @@ const InputBox = ({
         onChange={handleInputChange}
       ></input>
       <label
-        className={`text-secondary-text absolute my-auto top-0 bottom-0 h-fit transition ${
+        className={`text-secondary-text absolute my-auto top-0 bottom-0 h-fit transition pointer-events-none ${
           !isPlaceholderShown ? "text-xs m-0 top-auto bottom-auto" : ""
         }`}
       >
