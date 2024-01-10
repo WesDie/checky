@@ -5,6 +5,7 @@ interface InputBoxProps {
   type: string;
   formattedValue: string;
   autoComplete?: string;
+  maxLength?: number;
 }
 
 const InputBox = ({
@@ -12,6 +13,7 @@ const InputBox = ({
   type,
   autoComplete,
   formattedValue,
+  maxLength,
 }: InputBoxProps) => {
   const [isPlaceholderShown, setIsPlaceholderShown] = useState(true);
 
@@ -22,9 +24,10 @@ const InputBox = ({
   return (
     <div className="flex w-full h-[51px] py-2 px-4 bg-tertiary-bg gap-2 rounded-md relative">
       <input
-        className={`outline-none w-full bg-transparent placeholder:text-secondary-text transition ${
+        className={`outline-none w-11/12 text-ellipsis bg-transparent placeholder:text-secondary-text transition ${
           !isPlaceholderShown ? "text-sm bottom-2 absolute top-0 pt-4 mt-2" : ""
         }`}
+        maxLength={maxLength}
         name={value}
         type={type}
         autoComplete={autoComplete}

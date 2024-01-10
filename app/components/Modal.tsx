@@ -2,9 +2,11 @@
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import InputBox from "./ui/InputBox";
 import { useInsertNewCategory } from "@/lib/hooks/useSupabase";
-import { useFormStatus, useFormState } from "react-dom";
+import { useFormStatus, useFormState } from "react-dom"; // Remove unnecessary import
 import IconSelectInput from "./IconSelectInput";
 import { useEffect, useState } from "react";
+import { useSearchParams, usePathname } from "next/navigation";
+import Link from "next/link";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -20,18 +22,17 @@ function SubmitButton() {
   );
 }
 
-type Props = {
-  isOpen: boolean;
-  closeModal: () => void;
-};
-
 const initialState = {
   message: "",
 };
 
-export default function Modal({ isOpen, closeModal }: Props) {
+export default function Modal() {
   const [state, formAction] = useFormState(useInsertNewCategory, initialState);
   const [showMessage, setShowMessage] = useState(false);
+
+  const searchParams = useSearchParams();
+  const modal = searchParams.get("modal");
+  const pathname = usePathname();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -45,46 +46,56 @@ export default function Modal({ isOpen, closeModal }: Props) {
 
   return (
     <>
-      {isOpen && (
-        <div
-          className="absolute top-0 bottom-0 left-0 right-0 bg-primary-bg opacity-30 flex"
-          onClick={closeModal}
-        ></div>
-      )}
-      <div
-        className={`w-[450px] h-fit m-auto bg-dark p-6 rounded absolute top-0 left-0 right-0 bottom-0 flex flex-col ${
-          isOpen ? "" : "hidden"
-        }`}
-      >
-        <div className="flex mb-6">
-          <p className="text-lg my-auto">Modal</p>
-          <XMarkIcon
-            className="h-8 w-8 ml-auto opacity-100 hover:opacity-80 cursor-pointer transition"
-            onClick={closeModal}
-          ></XMarkIcon>
-        </div>
-        {showMessage && (
-          <p
-            className={`${
-              state?.message?.startsWith("Red:") ? "text-red" : "text-green"
-            } mb-4`}
+      {modal && (
+        <>
+          <Link href={pathname} className="cursor-default">
+            <div className="absolute top-0 bottom-0 left-0 right-0 bg-primary-bg opacity-30 flex"></div>
+          </Link>
+          <div
+            className={`w-[450px] h-fit m-auto bg-dark p-6 rounded absolute top-0 left-0 right-0 bottom-0 flex flex-col`}
           >
-            {state?.message?.split(": ")[1]}
-          </p>
-        )}
-        <form className="flex flex-col gap-4" action={formAction}>
-          <div className="flex gap-4">
-            <InputBox value="name" type="text" formattedValue="Name"></InputBox>
-            <IconSelectInput value={"icon"} defaultValue="📄"></IconSelectInput>
+            <div className="flex mb-6">
+              <p className="text-lg my-auto">Add folder</p>
+              <Link
+                href={pathname}
+                className="h-8 w-8 ml-auto opacity-100 hover:opacity-80 cursor-pointer transition"
+              >
+                <XMarkIcon></XMarkIcon>
+              </Link>
+            </div>
+            {showMessage && (
+              <p
+                className={`${
+                  state?.message?.startsWith("Red:") ? "text-red" : "text-green"
+                } mb-4`}
+              >
+                {state?.message?.split(": ")[1]}
+              </p>
+            )}
+            <form className="flex flex-col gap-4" action={formAction}>
+              <div className="flex gap-4">
+                <InputBox
+                  value="name"
+                  type="text"
+                  formattedValue="Name"
+                  maxLength={20}
+                ></InputBox>
+                <IconSelectInput
+                  value={"icon"}
+                  defaultValue="📄"
+                ></IconSelectInput>
+              </div>
+              <InputBox
+                value="description"
+                type="text"
+                formattedValue="Description"
+                maxLength={100}
+              ></InputBox>
+              <SubmitButton />
+            </form>
           </div>
-          <InputBox
-            value="description"
-            type="text"
-            formattedValue="Description"
-          ></InputBox>
-          <SubmitButton />
-        </form>
-      </div>
+        </>
+      )}
     </>
   );
 }
