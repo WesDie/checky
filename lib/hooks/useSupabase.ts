@@ -74,7 +74,7 @@ export async function useInsertNewCategory(
     name: String(formData.get("name")).replace(/ /g, "-"),
     description: formData.get("description"),
     can_be_edited: true,
-    icon: formData.get("iconNumber"),
+    icon: formData.get("icon"),
   });
   revalidatePath("/");
 

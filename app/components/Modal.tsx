@@ -75,7 +75,7 @@ export default function Modal({ isOpen, closeModal }: Props) {
         <form className="flex flex-col gap-4" action={formAction}>
           <div className="flex gap-4">
             <InputBox value="name" type="text" formattedValue="Name"></InputBox>
-            <IconSelectInput value={"iconNumber"}></IconSelectInput>
+            <IconSelectInput value={"icon"}></IconSelectInput>
           </div>
           <InputBox
             value="description"
