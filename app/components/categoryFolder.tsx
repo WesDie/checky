@@ -1,4 +1,3 @@
-import { CakeIcon } from "@heroicons/react/24/outline";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
@@ -12,7 +11,9 @@ export default function categoryFolder(
       href={`/folder/${category.name.toLowerCase()}`}
       className="py-2 px-4 bg-secondary-bg flex gap-4 rounded hover:opacity-80 transition cursor-pointer"
     >
-      <CakeIcon className="w-10 h-10 my-auto"></CakeIcon>
+      <div className="flex w-[50px] h-[50px] my-auto bg-quaternary-bg rounded-full">
+        <p className="m-auto text-3xl">{category.icon}</p>
+      </div>
       <div>
         <p>{category.name}</p>
         <p className="opacity-50">20 lists</p>

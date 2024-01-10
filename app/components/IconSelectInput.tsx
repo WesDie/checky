@@ -5,6 +5,7 @@ import { Theme, SkinTones, Emoji } from "emoji-picker-react";
 
 interface selectInputProps {
   value: string;
+  defaultValue: string;
 }
 
 const Picker = dynamic(
@@ -14,8 +15,8 @@ const Picker = dynamic(
   { ssr: false }
 );
 
-const IconSelectInput = ({ value }: selectInputProps) => {
-  const [inputValue, setInputValue] = useState("");
+const IconSelectInput = ({ value, defaultValue }: selectInputProps) => {
+  const [inputValue, setInputValue] = useState(defaultValue);
   const [isEmoijPanelOpen, setIsEmoijPanelOpen] = useState(false);
   const emoijPanelRef = useRef<HTMLDivElement>(null);
 
