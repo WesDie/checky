@@ -57,6 +57,13 @@ export async function useInsertNewCategory(
     .eq("userid", session?.user?.id ?? "")
     .eq("name", formData.get("name"));
 
+  const name = String(formData.get("name")).trim();
+  if (name === "") {
+    return {
+      message: "Red: Please fill in the name field",
+    };
+  }
+
   if (existingCategory && existingCategory.length > 0) {
     return {
       message: "Red: Category name already exists please choose another name",
@@ -64,7 +71,7 @@ export async function useInsertNewCategory(
   }
 
   const { error } = await supabase.from("users_categories_folders").insert({
-    name: formData.get("name"),
+    name: String(formData.get("name")).replace(/ /g, "-"),
     description: formData.get("description"),
     can_be_edited: true,
     icon: formData.get("iconNumber"),

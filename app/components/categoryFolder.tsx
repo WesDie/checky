@@ -9,7 +9,7 @@ export default function categoryFolder(
   return (
     <Link
       key={index}
-      href={`/${category.name.toLowerCase()}`}
+      href={`/folder/${category.name.toLowerCase()}`}
       className="py-2 px-4 bg-secondary-bg flex gap-4 rounded hover:opacity-80 transition cursor-pointer"
     >
       <CakeIcon className="w-10 h-10 my-auto"></CakeIcon>

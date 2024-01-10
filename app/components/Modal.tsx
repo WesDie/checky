@@ -31,12 +31,12 @@ const initialState = {
 
 export default function Modal({ isOpen, closeModal }: Props) {
   const [state, formAction] = useFormState(useInsertNewCategory, initialState);
-  const [showMessage, setShowMessage] = useState(true);
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowMessage(false);
-    }, 10000);
+    }, 1000);
 
     return () => {
       clearTimeout(timer);

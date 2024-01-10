@@ -7,7 +7,7 @@ export default async function App() {
   return (
     <main className="h-full w-full">
       <div className="h-full w-full flex">
-        <NavigationBar></NavigationBar>
+        <NavigationBar currentLink="/"></NavigationBar>
         <div className="flex flex-col h-full w-full">
           <Topbar type={"home"}></Topbar>
           <CategoryList></CategoryList>

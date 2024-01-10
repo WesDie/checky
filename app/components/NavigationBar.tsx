@@ -1,8 +1,16 @@
 import Avatar from "./Avatar";
-import { Cog6ToothIcon, HomeIcon } from "@heroicons/react/24/outline";
+import { CakeIcon, Cog6ToothIcon, HomeIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import { useGetCategoriesData } from "@/lib/hooks/useSupabase";
+import Link from "next/link";
 
-export default function NavigationBar() {
+type Props = {
+  currentLink: string;
+};
+
+export default async function NavigationBar({ currentLink }: Props) {
+  const categories = await useGetCategoriesData();
+
   return (
     <div className="h-full w-fit py-4 px-2 flex flex-col bg-primary-bg">
       <div className="flex flex-col gap-4 px-1">
@@ -10,13 +18,23 @@ export default function NavigationBar() {
           <div className="w-8 h-8 bg-white rounded-full"></div>
         </div>
         <div className="flex flex-col gap-4 h-fit">
-          <HomeIcon className="opacity-100 hover:cursor-pointer transition"></HomeIcon>
-          {[...Array(3)].map((_, index) => (
+          <Link href={`/`}>
             <HomeIcon
-              key={index}
-              className="opacity-50 hover:opacity-100 hover:cursor-pointer transition"
-            ></HomeIcon>
-          ))}
+              className={`opacity-${
+                currentLink === "/" ? "100" : "50"
+              } hover:cursor-pointer transition hover:opacity-100`}
+            />
+          </Link>
+          {categories &&
+            categories.map((category: any, index: number) => (
+              <Link key={index} href={`/folder/${category.name.toLowerCase()}`}>
+                <CakeIcon
+                  className={`opacity-${
+                    currentLink === category.name ? "100" : "50"
+                  } hover:cursor-pointer transition hover:opacity-100`}
+                ></CakeIcon>
+              </Link>
+            ))}
           <PlusCircleIcon className="opacity-50 hover:opacity-100 hover:cursor-pointer transition"></PlusCircleIcon>
         </div>
       </div>
