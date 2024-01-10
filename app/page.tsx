@@ -14,9 +14,6 @@ export default async function App() {
           <AddButton type={"category"}></AddButton>
         </div>
       </div>
-      <form action="/auth/sign-out" method="post">
-        <button>Logout</button>
-      </form>
     </main>
   );
 }

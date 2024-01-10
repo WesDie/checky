@@ -12,7 +12,7 @@ export default async function App({
       <div className="h-full w-full flex">
         <NavigationBar currentLink={params.folderName}></NavigationBar>
         <div className="flex flex-col h-full w-full">
-          <Topbar type={"list"} listid={params.folderName}></Topbar>
+          <Topbar type={"folder"} folderName={params.folderName}></Topbar>
           <AddButton type={"category"}></AddButton>
         </div>
       </div>
