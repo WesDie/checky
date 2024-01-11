@@ -32,30 +32,24 @@ export async function useGetProfileData() {
   return data;
 }
 
-export async function useGetCategoriesData() {
+export async function useGetFoldersData() {
   const { supabase, session } = await checkUser();
 
   const { data } = await supabase
-    .from("users_categories_folders")
+    .from("users_folders")
     .select()
     .eq("userid", session?.user?.id ?? "");
 
   return data;
 }
 
-export async function useInsertNewCategory(
+export async function useInsertNewFolder(
   prevState: {
     message: string;
   },
   formData: FormData
 ) {
   const { supabase, session } = await checkUser();
-
-  const { data: existingCategory } = await supabase
-    .from("users_categories_folders")
-    .select()
-    .eq("userid", session?.user?.id ?? "")
-    .eq("name", formData.get("name"));
 
   const name = String(formData.get("name")).trim();
   if (name === "") {
@@ -64,23 +58,49 @@ export async function useInsertNewCategory(
     };
   }
 
-  if (existingCategory && existingCategory.length > 0) {
+  if (name.length > 20 || name.length < 3) {
     return {
-      message: "Red: Category name already exists please choose another name",
+      message:
+        "Red: Folder name must be less than 20 characters and more than 3 characters",
     };
   }
 
-  const { error } = await supabase.from("users_categories_folders").insert({
-    name: String(formData.get("name")).replace(/ /g, "-"),
-    description: formData.get("description"),
+  const description = formData?.get("description");
+  if (typeof description === "string" && description.length > 50) {
+    return {
+      message: "Red: Folder description must be less than 50 characters",
+    };
+  }
+
+  if (formData.get("icon") === null) {
+    return {
+      message: "Red: Please select an icon",
+    };
+  }
+
+  const { data: existingFolder } = await supabase
+    .from("users_folders")
+    .select()
+    .eq("userid", session?.user?.id ?? "")
+    .eq("name", name);
+
+  if (existingFolder && existingFolder.length > 0) {
+    return {
+      message: "Red: Folder name already exists please choose another name",
+    };
+  }
+
+  const { error } = await supabase.from("users_folders").insert({
+    name: name.replace(/ /g, "-"),
+    description: description,
     can_be_edited: true,
     icon: formData.get("icon"),
   });
   revalidatePath("/");
 
   if (error) {
-    return { message: "Red: somthing went wrong" };
+    return { message: "Red: something went wrong" };
   }
 
-  return { message: "Green: Category created successfully" };
+  return { message: "Green: Folder created successfully" };
 }

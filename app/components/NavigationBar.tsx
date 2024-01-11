@@ -1,7 +1,7 @@
 import Avatar from "./Avatar";
 import { CakeIcon, Cog6ToothIcon, HomeIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import { useGetCategoriesData } from "@/lib/hooks/useSupabase";
+import { useGetFoldersData } from "@/lib/hooks/useSupabase";
 import Link from "next/link";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default async function NavigationBar({ currentLink }: Props) {
-  const categories = await useGetCategoriesData();
+  const categories = await useGetFoldersData();
 
   return (
     <div className="h-full w-fit py-4 px-2 flex flex-col bg-primary-bg">
