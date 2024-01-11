@@ -35,7 +35,12 @@ export default async function NavigationBar({ currentLink }: Props) {
                 ></CakeIcon>
               </Link>
             ))}
-          <PlusCircleIcon className="opacity-50 hover:opacity-100 hover:cursor-pointer transition"></PlusCircleIcon>
+          <Link
+            href="?modal=true&add-folder=true"
+            className="opacity-50 hover:opacity-100 hover:cursor-pointer transition"
+          >
+            <PlusCircleIcon></PlusCircleIcon>
+          </Link>
         </div>
       </div>
       <div className="mt-auto mx-auto flex flex-col gap-4">
