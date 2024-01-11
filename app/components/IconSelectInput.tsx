@@ -1,24 +1,16 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import dynamic from "next/dynamic";
-import { Theme, SkinTones, Emoji } from "emoji-picker-react";
+import EmojiPanel from "./EmojiPanel";
 
 interface selectInputProps {
   value: string;
   defaultValue: string;
 }
 
-const Picker = dynamic(
-  () => {
-    return import("emoji-picker-react");
-  },
-  { ssr: false }
-);
-
 const IconSelectInput = ({ value, defaultValue }: selectInputProps) => {
   const [inputValue, setInputValue] = useState(defaultValue);
-  const [isEmoijPanelOpen, setIsEmoijPanelOpen] = useState(false);
-  const emoijPanelRef = useRef<HTMLDivElement>(null);
+  const [isemojiPanelOpen, setIsemojiPanelOpen] = useState(false);
+  const emojiPanelRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value.toString());
@@ -26,15 +18,15 @@ const IconSelectInput = ({ value, defaultValue }: selectInputProps) => {
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
-      emoijPanelRef.current &&
-      !emoijPanelRef.current.contains(event.target as Node)
+      emojiPanelRef.current &&
+      !emojiPanelRef.current.contains(event.target as Node)
     ) {
-      setIsEmoijPanelOpen(false);
+      setIsemojiPanelOpen(false);
     }
   };
 
-  const handleEmoijClick = (emoij: any) => {
-    setInputValue(emoij.emoji);
+  const handleEmojiClick = (emojiCharacter: string) => {
+    setInputValue(emojiCharacter);
   };
 
   useEffect(() => {
@@ -48,7 +40,7 @@ const IconSelectInput = ({ value, defaultValue }: selectInputProps) => {
     <div className="relative">
       <div
         className="flex w-[51px] h-[51px] bg-tertiary-bg rounded-full cursor-pointer hover:opacity-80 transition"
-        onClick={() => setIsEmoijPanelOpen(!isEmoijPanelOpen)}
+        onClick={() => setIsemojiPanelOpen(!isemojiPanelOpen)}
       >
         <input
           className="hidden"
@@ -60,19 +52,12 @@ const IconSelectInput = ({ value, defaultValue }: selectInputProps) => {
         <p className="m-auto text-2xl align-middle">{inputValue}</p>
       </div>
       <div
-        ref={emoijPanelRef}
+        ref={emojiPanelRef}
         className={`absolute top-14 right-0 z-10 ${
-          !isEmoijPanelOpen ? "hidden" : ""
+          !isemojiPanelOpen ? "hidden" : ""
         }`}
       >
-        <Picker
-          theme={Theme.DARK}
-          skinTonesDisabled={true}
-          searchDisabled={true}
-          width={350}
-          height={400}
-          onEmojiClick={(emoji) => handleEmoijClick(emoji)}
-        />
+        <EmojiPanel onClick={handleEmojiClick}></EmojiPanel>
       </div>
     </div>
   );
