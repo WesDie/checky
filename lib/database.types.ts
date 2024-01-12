@@ -14,16 +14,22 @@ export interface Database {
           id: string;
           profile_colors: string | null;
           username: string;
+          theme: string;
+          highlight_colors: string;
         };
         Insert: {
           id: string;
           profile_colors?: string | null;
           username: string;
+          theme?: string;
+          highlight_colors?: string;
         };
         Update: {
           id?: string;
           profile_colors?: string | null;
           username?: string;
+          theme?: string;
+          highlight_colors?: string;
         };
         Relationships: [];
       };

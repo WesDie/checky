@@ -45,7 +45,9 @@ export default async function NavigationBar({ currentLink }: Props) {
       </div>
       <div className="mt-auto mx-auto flex flex-col gap-4">
         <Avatar></Avatar>
-        <Cog6ToothIcon className="opacity-100 hover:opacity-80 hover:cursor-pointer transition"></Cog6ToothIcon>
+        <Link href={"/settings"}>
+          <Cog6ToothIcon className="opacity-100 hover:opacity-80 hover:cursor-pointer transition"></Cog6ToothIcon>
+        </Link>
       </div>
     </div>
   );

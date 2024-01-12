@@ -32,6 +32,17 @@ export async function useGetProfileData() {
   return data;
 }
 
+export async function useGetUserProfileData() {
+  const { supabase, session } = await checkUser();
+
+  const { data } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("id", session?.user?.id ?? "");
+
+  return data;
+}
+
 export async function useGetFoldersData() {
   const { supabase, session } = await checkUser();
 
@@ -103,4 +114,30 @@ export async function useInsertNewFolder(
   }
 
   return { message: "Green: Folder created successfully" };
+}
+
+export async function useUpdateUserData(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
+  const { supabase, session } = await checkUser();
+
+  const { error } = await supabase
+    .from("user_profiles")
+    .update({
+      username: formData.get("username")?.toString(),
+      theme: formData.get("theme")?.toString(),
+      highlight_colors: formData.get("highlight_color")?.toString(),
+    })
+    .eq("id", session?.user?.id ?? "");
+
+  revalidatePath("/settings");
+
+  if (error) {
+    return { message: "Red: something went wrong" };
+  }
+
+  return { message: "Green: Updated values" };
 }

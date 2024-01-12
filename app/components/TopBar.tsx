@@ -17,6 +17,9 @@ export default function Topbar({ type, listName, folderName }: Props) {
         {type.includes("folder") && (
           <p className="my-auto opacity-100">{folderName}</p>
         )}
+        {type.includes("settings") && (
+          <p className="my-auto opacity-100">settings</p>
+        )}
         {type.includes("list") && (
           <>
             <Link
@@ -37,6 +40,7 @@ export default function Topbar({ type, listName, folderName }: Props) {
     <div className="w-full py-4 px-2 h-16 flex bg-primary-bg">
       {type.includes("folder") && <>{renderLinks()}</>}
       {type.includes("list") && <>{renderLinks()}</>}
+      {type.includes("settings") && <>{renderLinks()}</>}
       {type.includes("home") && <p className="my-auto">Home</p>}
     </div>
   );

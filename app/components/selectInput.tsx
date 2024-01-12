@@ -1,28 +1,55 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 
 interface SelectInputProps {
   selectedValue: string;
   value: string;
   options: string[];
+  formattedValue: string;
+  onChange?: (value: string) => void;
 }
 
-const SelectInput = ({ value, selectedValue, options }: SelectInputProps) => {
+const SelectInput = ({
+  value,
+  selectedValue,
+  options,
+  formattedValue,
+  onChange,
+}: SelectInputProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [selectedValueOption, setSelectedValue] = useState(selectedValue);
+  const optionsRef = useRef<HTMLDivElement>(null);
 
   const toggleOptions = () => {
     setShowOptions(!showOptions);
   };
+
   const handleOptionClick = (option: string) => {
     setSelectedValue(option);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      optionsRef.current &&
+      !optionsRef.current.contains(event.target as Node)
+    ) {
+      setShowOptions(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
-      className="flex w-full h-[51px] py-2 px-4 bg-tertiary-bg gap-2 rounded cursor-pointer relative"
+      className="flex w-full h-[51px] py-2 bg-primary-bg gap-2 rounded cursor-pointer relative"
       onClick={toggleOptions}
+      ref={optionsRef}
     >
       <input
         name={value}
@@ -30,14 +57,24 @@ const SelectInput = ({ value, selectedValue, options }: SelectInputProps) => {
         className="hidden"
         onChange={() => {}}
       />
-      <p className="text-primary-text my-auto">{selectedValueOption}</p>
+      <label className="text-secondary-text absolute top-0 text-xs py-2 px-4">
+        {formattedValue}
+      </label>
+      <p className="outline-none w-11/12 text-ellipsis bg-transparent placeholder:text-secondary-text transition text-sm bottom-2 absolute top-0 pt-4 mt-2 ml-4">
+        {selectedValueOption}
+      </p>
       {showOptions && (
-        <div className="flex flex-col mt-[51px] gap-2 bg-tertiary-bg absolute p-2 w-full rounded">
+        <div className="flex flex-col mt-[51px] bg-primary-bg absolute p-2 w-full rounded z-10">
           {options.map((option) => (
             <option
-              className="hover:opacity-100 opacity-50"
+              className="hover:opacity-100 opacity-50 my-1"
               key={option}
-              onClick={() => handleOptionClick(option)}
+              onClick={() => {
+                if (onChange) {
+                  onChange(option);
+                }
+                handleOptionClick(option);
+              }}
             >
               {option}
             </option>
@@ -45,7 +82,7 @@ const SelectInput = ({ value, selectedValue, options }: SelectInputProps) => {
         </div>
       )}
       <ChevronDownIcon
-        className={`ml-auto w-6 h-6 my-auto ${
+        className={`ml-auto w-6 h-6 my-auto mr-4 ${
           showOptions ? "" : "rotate-180"
         } opacity-50 transition`}
       />

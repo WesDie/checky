@@ -1,7 +1,7 @@
 "use client";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useFormStatus, useFormState } from "react-dom";
-import { useSearchParams, usePathname, useParams } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import InputBox from "./ui/InputBox";
 import IconSelectInput from "./IconSelectInput";

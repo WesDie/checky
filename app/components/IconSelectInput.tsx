@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import EmojiPanel from "./EmojiPanel";
+import EmojiPanel from "./emojiPanel";
 
 interface selectInputProps {
   value: string;
@@ -39,7 +39,7 @@ const IconSelectInput = ({ value, defaultValue }: selectInputProps) => {
   return (
     <div className="relative">
       <div
-        className="flex w-[51px] h-[51px] bg-tertiary-bg rounded-full cursor-pointer hover:opacity-80 transition"
+        className="flex w-[51px] h-[51px] bg-primary-bg rounded-full cursor-pointer hover:opacity-80 transition"
         onClick={() => setIsemojiPanelOpen(!isemojiPanelOpen)}
       >
         <input

@@ -18,7 +18,7 @@ const CheckMarkInput = ({ value, displayValue }: selectInputProps) => {
         name={value}
         value={isEnabled.toString()}
         onClick={() => setIsEnabled(!isEnabled)}
-        className="appearance-none w-8 h-8 rounded bg-tertiary-bg cursor-pointer"
+        className="appearance-none w-8 h-8 rounded bg-primary-bg cursor-pointer"
       />
       {isEnabled ? (
         <CheckIcon className="absolute bottom-0 fill-white w-8 h-8 p-1 pointer-events-none" />
