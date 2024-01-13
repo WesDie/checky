@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import InputBox from "../components/ui/InputBox";
 
-const signUp = () => {
+const SignUp = () => {
   const [errorSignup, setError] = useState<string | null>(null);
   const submitBtn = useRef<HTMLButtonElement>(null);
   const router = useRouter();
@@ -95,4 +95,4 @@ const signUp = () => {
   );
 };
 
-export default signUp;
+export default SignUp;

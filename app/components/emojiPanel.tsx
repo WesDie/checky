@@ -1,3 +1,4 @@
+"use client";
 import { useGetAllEmoji } from "@/lib/hooks/useEmoji";
 import { useEffect, useState } from "react";
 interface emojiPanelProps {
@@ -8,13 +9,14 @@ export function EmojiPanel({ onClick }: emojiPanelProps) {
   const [emojiData, setEmojiData] = useState<any[]>([]);
   const [isLoading, setLoading] = useState(true);
 
+  const FetchData = async () => {
+    const data = await useGetAllEmoji();
+    setEmojiData(data);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await useGetAllEmoji();
-      setEmojiData(data);
-      setLoading(false);
-    };
-    fetchData();
+    FetchData();
   }, []);
 
   if (isLoading) return <p>Loading...</p>;

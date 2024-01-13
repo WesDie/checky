@@ -54,7 +54,7 @@ export default function SettingsForm({ userData }: { userData: UserData[] }) {
         type="text"
         formattedValue="Email"
         maxLength={25}
-        defaultValue={userData.email ?? ""}
+        defaultValue={userData[0].email ?? ""}
         onChange={handleInputChange}
         disabled={true}
       />

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import InputBox from "../components/ui/InputBox";
 
-const signUp = () => {
+const SignIn = () => {
   const [errorSignin, setError] = useState<string | null>(null);
   const submitBtn = useRef<HTMLButtonElement>(null);
   const router = useRouter();
@@ -74,7 +74,7 @@ const signUp = () => {
             </button>
           </form>
           <div className="flex gap-1 m-auto">
-            <p className="opacity-50">Don't have an account?</p>
+            <p className="opacity-50">Don&apos;t have an account?</p>
             <Link href="/signup" className="hover:underline">
               Sign up
             </Link>
@@ -85,4 +85,4 @@ const signUp = () => {
   );
 };
 
-export default signUp;
+export default SignIn;

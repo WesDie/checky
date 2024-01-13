@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import EmojiPanel from "./emojiPanel";
+import EmojiPanel from "./EmojiPanel";
 
 interface selectInputProps {
   value: string;
