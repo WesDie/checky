@@ -9,6 +9,7 @@ interface InputBoxProps {
   maxLength?: number;
   defaultValue?: string;
   onChange?: (value: string) => void;
+  disabled?: boolean;
 }
 
 const InputBox = ({
@@ -19,6 +20,7 @@ const InputBox = ({
   maxLength,
   defaultValue,
   onChange,
+  disabled,
 }: InputBoxProps) => {
   const [isPlaceholderShown, setIsPlaceholderShown] = useState(
     defaultValue ? false : true
@@ -32,9 +34,13 @@ const InputBox = ({
   };
 
   return (
-    <div className="flex w-full h-[51px] py-2 px-4 bg-primary-bg gap-2 rounded-md relative">
+    <div
+      className={`flex w-full h-[51px] py-2 px-4 bg-primary-bg gap-2 rounded-md relative`}
+    >
       <input
         className={`outline-none w-11/12 text-ellipsis bg-transparent placeholder:text-secondary-text transition ${
+          disabled ? "opacity-50" : ""
+        } ${
           !isPlaceholderShown ? "text-sm bottom-2 absolute top-0 pt-4 mt-2" : ""
         }`}
         maxLength={maxLength}
@@ -43,6 +49,7 @@ const InputBox = ({
         autoComplete={autoComplete}
         onChange={handleInputChange}
         value={inputValue}
+        disabled={disabled}
       ></input>
       <label
         className={`text-secondary-text absolute my-auto top-0 bottom-0 h-fit transition pointer-events-none ${

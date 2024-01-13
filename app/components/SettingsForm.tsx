@@ -2,47 +2,32 @@
 import { useEffect, useState } from "react";
 import InputBox from "./ui/InputBox";
 import SelectInput from "./selectInput";
-import {
-  useGetUserProfileData,
-  useUpdateUserData,
-} from "@/lib/hooks/useSupabase";
+import { useUpdateUserData } from "@/lib/hooks/useSupabase";
 import { useFormStatus, useFormState } from "react-dom";
 
 interface UserData {
   id: string;
-  profile_colors: string | null;
   username: string;
+  profile_colors: string | null;
   theme: string | null;
   highlight_colors: string | null;
+  email: string;
 }
 
 const initialState = {
   message: "",
 };
 
-export default function SettingsForm() {
-  const [userData, setUserData] = useState<UserData[] | null>(null);
+export default function SettingsForm({ userData }: { userData: UserData[] }) {
   const [state, formAction] = useFormState(useUpdateUserData, initialState);
   const [hasChanges, setHasChanges] = useState(false);
   const { pending } = useFormStatus();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await useGetUserProfileData();
-      setUserData(data);
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
     if (state?.message?.startsWith("Green:")) {
       setHasChanges(false);
     }
   }, [state?.message]);
-
-  if (!userData) {
-    return <p className="m-auto">Loading...</p>;
-  }
 
   const handleInputChange = () => {
     setHasChanges(true);
@@ -52,6 +37,8 @@ export default function SettingsForm() {
     setHasChanges(true);
   };
 
+  const { username, theme, highlight_colors } = userData[0] || {};
+
   return (
     <form className="p-6 flex flex-col gap-4 h-full" action={formAction}>
       <InputBox
@@ -59,7 +46,7 @@ export default function SettingsForm() {
         type="text"
         formattedValue="Username"
         maxLength={25}
-        defaultValue={userData[0]?.username ?? ""}
+        defaultValue={username ?? ""}
         onChange={handleInputChange}
       />
       <InputBox
@@ -67,18 +54,19 @@ export default function SettingsForm() {
         type="text"
         formattedValue="Email"
         maxLength={25}
-        defaultValue="John Doe"
+        defaultValue={userData.email ?? ""}
         onChange={handleInputChange}
+        disabled={true}
       />
       <SelectInput
-        selectedValue={userData[0]?.theme ?? ""}
+        selectedValue={theme ?? ""}
         value={"theme"}
         options={["dark", "light"]}
         formattedValue="Theme"
         onChange={handleSelectChange}
       />
       <SelectInput
-        selectedValue={userData[0]?.highlight_colors ?? ""}
+        selectedValue={highlight_colors ?? ""}
         value={"highlight_color"}
         options={["orange", "blue", "green", "purple", "pink", "red"]}
         formattedValue="Highlight Color"

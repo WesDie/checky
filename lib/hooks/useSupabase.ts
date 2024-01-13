@@ -40,7 +40,11 @@ export async function useGetUserProfileData() {
     .select("*")
     .eq("id", session?.user?.id ?? "");
 
-  return data;
+  const { email } = session?.user ?? {};
+
+  const userProfileData = { ...data, email };
+
+  return userProfileData;
 }
 
 export async function useGetFoldersData() {

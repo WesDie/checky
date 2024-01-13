@@ -15,7 +15,10 @@ export default function Topbar({ type, listName, folderName }: Props) {
           Home /
         </Link>
         {type.includes("folder") && (
-          <p className="my-auto opacity-100">{folderName}</p>
+          <>
+            <p className="my-auto opacity-100">{folderName}</p>
+            <EllipsisHorizontalIcon className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4" />
+          </>
         )}
         {type.includes("settings") && (
           <p className="my-auto opacity-100">settings</p>
@@ -29,9 +32,9 @@ export default function Topbar({ type, listName, folderName }: Props) {
               {folderName} /
             </Link>
             <p className="my-auto opacity-100">{listName}</p>
+            <EllipsisHorizontalIcon className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4" />
           </>
         )}
-        <EllipsisHorizontalIcon className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4" />
       </>
     );
   };

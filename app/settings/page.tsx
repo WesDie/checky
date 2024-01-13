@@ -1,6 +1,6 @@
 import NavigationBar from "../components/NavigationBar";
 import Topbar from "../components/TopBar";
-import SettingsForm from "../components/SettingsForm";
+import AppSettings from "../components/AppSettings";
 
 export default async function App({
   params,
@@ -13,7 +13,7 @@ export default async function App({
         <NavigationBar currentLink={params.folderName}></NavigationBar>
         <div className="flex flex-col h-full w-full">
           <Topbar type={"settings"}></Topbar>
-          <SettingsForm></SettingsForm>
+          <AppSettings></AppSettings>
         </div>
       </div>
     </main>
