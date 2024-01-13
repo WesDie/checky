@@ -1,13 +1,24 @@
+"use client";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-type Props = {
-  type: string;
-  listName?: string;
-  folderName?: string;
-};
+export default function Topbar() {
+  const pathname = usePathname();
 
-export default function Topbar({ type, listName, folderName }: Props) {
+  let type = "home";
+  let folderName = "folderName";
+  let listName = "listName";
+
+  if (pathname === "/") {
+    type = "home";
+  } else if (pathname === "/settings") {
+    type = "settings";
+  } else if (pathname.includes("/folder")) {
+    type = "folder";
+    folderName = pathname.replace("/folder/", "");
+  }
+
   const renderLinks = () => {
     return (
       <>

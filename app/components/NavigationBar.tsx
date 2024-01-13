@@ -1,14 +1,10 @@
 import Avatar from "./Avatar";
-import { CakeIcon, Cog6ToothIcon, HomeIcon } from "@heroicons/react/24/outline";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import NavCategoriesList from "./NavCategoriesList";
+import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { useGetFoldersData } from "@/lib/hooks/useSupabase";
 import Link from "next/link";
 
-type Props = {
-  currentLink: string;
-};
-
-export default async function NavigationBar({ currentLink }: Props) {
+export default async function NavigationBar() {
   const categories = await useGetFoldersData();
 
   return (
@@ -17,31 +13,7 @@ export default async function NavigationBar({ currentLink }: Props) {
         <div className="border-b-2 border-tertiary-bg pb-4">
           <div className="w-8 h-8 bg-white rounded-full"></div>
         </div>
-        <div className="flex flex-col gap-4 h-fit">
-          <Link href={`/`}>
-            <HomeIcon
-              className={`opacity-${
-                currentLink === "/" ? "100" : "50"
-              } hover:cursor-pointer transition hover:opacity-100`}
-            />
-          </Link>
-          {categories &&
-            categories.map((category: any, index: number) => (
-              <Link key={index} href={`/folder/${category.name.toLowerCase()}`}>
-                <CakeIcon
-                  className={`opacity-${
-                    currentLink === category.name ? "100" : "50"
-                  } hover:cursor-pointer transition hover:opacity-100`}
-                ></CakeIcon>
-              </Link>
-            ))}
-          <Link
-            href="?modal=true&add-folder=true"
-            className="opacity-50 hover:opacity-100 hover:cursor-pointer transition"
-          >
-            <PlusCircleIcon></PlusCircleIcon>
-          </Link>
-        </div>
+        <NavCategoriesList categories={categories}></NavCategoriesList>
       </div>
       <div className="mt-auto mx-auto flex flex-col gap-4">
         <Avatar></Avatar>

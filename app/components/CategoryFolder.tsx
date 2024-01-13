@@ -18,7 +18,7 @@ export default function categoryFolder(
         <p>{category.name}</p>
         <p className="opacity-50">20 lists</p>
       </div>
-      <ChevronRightIcon className="w-10 h-10 my-auto ml-auto"></ChevronRightIcon>
+      <ChevronRightIcon className="w-8 h-8 my-auto ml-auto opacity-50"></ChevronRightIcon>
     </Link>
   );
 }

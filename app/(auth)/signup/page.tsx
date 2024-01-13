@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import InputBox from "../components/ui/InputBox";
+import InputBox from "../../components/ui/InputBox";
 
 const SignUp = () => {
   const [errorSignup, setError] = useState<string | null>(null);
