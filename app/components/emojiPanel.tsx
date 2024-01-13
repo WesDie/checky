@@ -5,7 +5,7 @@ interface emojiPanelProps {
   onClick?: (emoji: string) => void;
 }
 
-export function EmojiPanel({ onClick }: emojiPanelProps) {
+export default function EmojiPanel({ onClick }: emojiPanelProps) {
   const [emojiData, setEmojiData] = useState<any[]>([]);
   const [isLoading, setLoading] = useState(true);
 
@@ -37,5 +37,3 @@ export function EmojiPanel({ onClick }: emojiPanelProps) {
     </div>
   );
 }
-
-export default EmojiPanel;

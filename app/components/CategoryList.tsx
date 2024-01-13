@@ -1,5 +1,5 @@
 import { useGetFoldersData } from "@/lib/hooks/useSupabase";
-import categoryFolder from "./categoryFolder";
+import categoryFolder from "./CategoryFolder";
 
 export default async function CategoryList() {
   const categories = await useGetFoldersData();

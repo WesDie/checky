@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import InputBox from "./ui/InputBox";
-import SelectInput from "./selectInput";
+import SelectInput from "./SelectInput";
 import { useUpdateUserData } from "@/lib/hooks/useSupabase";
 import { useFormStatus, useFormState } from "react-dom";
 
