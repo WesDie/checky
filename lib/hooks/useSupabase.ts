@@ -128,6 +128,16 @@ export async function useUpdateUserData(
 ) {
   const { supabase, session } = await checkUser();
 
+  if (
+    formData.get("username") === "" ||
+    formData.get("theme") === "" ||
+    formData.get("highlight_color") === ""
+  ) {
+    return {
+      message: "Red: Please fill in all the fields",
+    };
+  }
+
   const { error } = await supabase
     .from("user_profiles")
     .update({

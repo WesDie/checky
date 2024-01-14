@@ -7,7 +7,7 @@ interface SelectInputProps {
   value: string;
   options: string[];
   formattedValue: string;
-  onChange?: (value: string) => void;
+  onChange?: (value: string, valueName: string) => void;
 }
 
 const SelectInput = ({
@@ -71,7 +71,7 @@ const SelectInput = ({
               key={option}
               onClick={() => {
                 if (onChange) {
-                  onChange(option);
+                  onChange(option, value);
                 }
                 handleOptionClick(option);
               }}

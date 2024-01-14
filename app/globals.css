@@ -12,7 +12,20 @@
   :root {
     --text-color: #fff;
     --background-color: #000;
+    --highlight-color: #00000000;
   }
+}
+
+.text-highlight-color {
+  color: var(--highlight-color);
+}
+
+.bg-highlight-color {
+  background-color: var(--highlight-color);
+}
+
+.border-highlight-color {
+  border-color: var(--highlight-color);
 }
 
 body {

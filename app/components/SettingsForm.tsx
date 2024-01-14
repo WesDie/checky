@@ -29,11 +29,12 @@ export default function SettingsForm({ userData }: { userData: UserData[] }) {
     }
   }, [state?.message]);
 
-  const handleInputChange = () => {
-    setHasChanges(true);
-  };
+  const handleChange = (newValue: string, valueName: string) => {
+    console.log(newValue, valueName);
+    if (valueName === "highlight_color") {
+      document.documentElement.style.setProperty("--highlight-color", newValue);
+    }
 
-  const handleSelectChange = () => {
     setHasChanges(true);
   };
 
@@ -47,7 +48,7 @@ export default function SettingsForm({ userData }: { userData: UserData[] }) {
         formattedValue="Username"
         maxLength={25}
         defaultValue={username ?? ""}
-        onChange={handleInputChange}
+        onChange={handleChange}
       />
       <InputBox
         value="Email"
@@ -55,7 +56,6 @@ export default function SettingsForm({ userData }: { userData: UserData[] }) {
         formattedValue="Email"
         maxLength={25}
         defaultValue={userData[0].email ?? ""}
-        onChange={handleInputChange}
         disabled={true}
       />
       <SelectInput
@@ -63,14 +63,14 @@ export default function SettingsForm({ userData }: { userData: UserData[] }) {
         value={"theme"}
         options={["dark", "light"]}
         formattedValue="Theme"
-        onChange={handleSelectChange}
+        onChange={handleChange}
       />
       <SelectInput
         selectedValue={highlight_colors ?? ""}
         value={"highlight_color"}
         options={["orange", "blue", "green", "purple", "pink", "red"]}
         formattedValue="Highlight Color"
-        onChange={handleSelectChange}
+        onChange={handleChange}
       />
       <p
         className={`${

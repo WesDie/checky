@@ -8,7 +8,7 @@ interface InputBoxProps {
   autoComplete?: string;
   maxLength?: number;
   defaultValue?: string;
-  onChange?: (value: string) => void;
+  onChange?: (value: string, valueName: string) => void;
   disabled?: boolean;
 }
 
@@ -30,7 +30,7 @@ const InputBox = ({
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsPlaceholderShown(event.target.value === "");
     seInputValue(event.target.value);
-    onChange && onChange(event.target.value);
+    onChange && onChange(event.target.value, value);
   };
 
   return (
