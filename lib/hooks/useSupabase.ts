@@ -58,6 +58,35 @@ export async function useGetFoldersData() {
   return data;
 }
 
+export async function useGetListsInFolderData(folder: string) {
+  const { supabase, session } = await checkUser();
+
+  // Get Folder ID
+  const { data: folderData } = await supabase
+    .from("users_folders")
+    .select()
+    .eq("name", folder ?? "")
+    .eq("userid", session?.user?.id ?? "");
+
+  // Get All lists ID's where is a member
+  const { data: listsData } = await supabase
+    .from("lists_members")
+    .select()
+    .eq("userid", session?.user?.id ?? "");
+
+  const folderIds = folderData?.map((folder) => folder.id) ?? [];
+  const listIds = listsData?.map((list) => list.listid) ?? [];
+
+  // Get All lists where is a member plus where folderid is the same as previously fetched folder ID
+  const { data: listsInFolder } = await supabase
+    .from("lists")
+    .select()
+    .in("id", listIds)
+    .in("folderid", folderIds);
+
+  return listsInFolder;
+}
+
 export async function useInsertNewFolder(
   prevState: {
     message: string;
@@ -154,4 +183,72 @@ export async function useUpdateUserData(
   }
 
   return { message: "Green: Updated values" };
+}
+
+export async function useInsertNewList(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
+  const { supabase, session } = await checkUser();
+
+  const title = formData.get("title")?.toString();
+  const description = formData.get("description")?.toString();
+  const icon = formData.get("icon")?.toString();
+  const folderName = formData.get("folderName")?.toString();
+
+  if (!title || !icon) {
+    return {
+      message: "Red: Please fill in all the fields",
+    };
+  }
+  if (title.length > 20 || title.length < 3) {
+    return {
+      message:
+        "Red: List title must be less than 20 characters and more than 3 characters",
+    };
+  }
+  if (description && description.length > 50) {
+    return {
+      message: "Red: List description must be less than 50 characters",
+    };
+  }
+  if (!folderName) {
+    return {
+      message: "Red: There is no folder selected",
+    };
+  }
+
+  const { data: folderData } = await supabase
+    .from("users_folders")
+    .select()
+    .eq("userid", session?.user?.id ?? "")
+    .eq("name", folderName ?? "");
+
+  const { data, error: listMainError } = await supabase
+    .from("lists")
+    .insert({
+      title: title,
+      description: description,
+      icon: icon,
+      folderid: folderData?.[0].id,
+    })
+    .select();
+
+  const { error: listMemberError } = await supabase
+    .from("lists_members")
+    .insert({
+      role: "member",
+      listid: data?.[0].id,
+    });
+
+  revalidatePath("/");
+
+  if (listMainError || listMemberError) {
+    console.log(listMainError, listMemberError);
+    return { message: "Red: something went wrong" };
+  }
+
+  return { message: "Green: Folder created successfully" };
 }

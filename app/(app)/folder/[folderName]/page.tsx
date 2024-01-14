@@ -1,4 +1,5 @@
 import AddButton from "../../../components/AddButton";
+import FolderSideBar from "../../../components/FolderSideBar";
 
 export default async function App({
   params,
@@ -7,7 +8,12 @@ export default async function App({
 }) {
   return (
     <>
-      <AddButton type={"category"}></AddButton>
+      <div className="flex h-full w-full">
+        <FolderSideBar folderName={params.folderName} />
+        <div className="w-full h-full flex flex-col">
+          <AddButton type={"list"}></AddButton>
+        </div>
+      </div>
     </>
   );
 }

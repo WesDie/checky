@@ -22,7 +22,7 @@ export default function NavCategoriesList({ categories }: Props) {
       </Link>
       {categories &&
         categories.map((category: any, index: number) => (
-          <Link key={index} href={`/folder/${category.name.toLowerCase()}`}>
+          <Link key={index} href={`/folder/${category.name}`}>
             <CakeIcon
               className={`opacity-${
                 currentLink === `/folder/${category.name}` ? "100" : "50"

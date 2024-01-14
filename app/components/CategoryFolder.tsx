@@ -8,7 +8,7 @@ export default function categoryFolder(
   return (
     <Link
       key={index}
-      href={`/folder/${category.name.toLowerCase()}`}
+      href={`/folder/${category.name}`}
       className="py-2 px-4 bg-secondary-bg flex gap-4 rounded hover:opacity-80 transition cursor-pointer"
     >
       <div className="flex w-[50px] h-[50px] my-auto bg-quaternary-bg rounded-full">
