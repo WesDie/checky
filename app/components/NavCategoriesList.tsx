@@ -10,6 +10,7 @@ type Props = {
 
 export default function NavCategoriesList({ categories }: Props) {
   const currentLink = usePathname();
+  const folderName = currentLink.match(/folder\/([^/]+)/)?.[1];
 
   return (
     <div className="flex flex-col gap-4 h-fit">
@@ -25,7 +26,7 @@ export default function NavCategoriesList({ categories }: Props) {
           <Link key={index} href={`/folder/${category.name}`}>
             <CakeIcon
               className={`opacity-${
-                currentLink === `/folder/${category.name}` ? "100" : "50"
+                folderName === `${category.name}` ? "100" : "50"
               } hover:cursor-pointer transition hover:opacity-100`}
             ></CakeIcon>
           </Link>

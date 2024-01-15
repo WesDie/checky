@@ -14,9 +14,16 @@ export default function Topbar() {
     type = "home";
   } else if (pathname === "/settings") {
     type = "settings";
-  } else if (pathname.includes("/folder")) {
+  } else if (pathname.includes("/folder") && !pathname.includes("/list")) {
     type = "folder";
     folderName = pathname.replace("/folder/", "");
+  } else if (pathname.includes("/folder") && pathname.includes("/list")) {
+    type = "list";
+    listName = pathname.substring(pathname.indexOf("/list/") + 6);
+    folderName = pathname
+      .substring(pathname.indexOf("/folder/") + 8)
+      .split("/")[0];
+    console.log(folderName);
   }
 
   const renderLinks = () => {

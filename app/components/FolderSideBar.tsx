@@ -1,6 +1,7 @@
 import { useGetListsInFolderData } from "@/lib/hooks/useSupabase";
 import AddButton from "./AddButton";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
 
 export default async function FolderSideBar({
   folderName,
@@ -12,9 +13,13 @@ export default async function FolderSideBar({
 
   return (
     <div className="bg-secondary-bg h-full w-[475px] py-8 px-4 flex-col flex gap-4">
-      {lists &&
+      {lists && lists.length === 0 ? (
+        <p className="opacity-50 mx-auto">No lists in folder</p>
+      ) : (
+        lists &&
         lists.map((list) => (
-          <div
+          <Link
+            href={`/folder/${folder}/list/${list.title}`}
             key={list.id}
             className="w-full bg-primary-bg flex p-4 gap-4 rounded hover:cursor-pointer hover:opacity-80 transition"
           >
@@ -26,8 +31,9 @@ export default async function FolderSideBar({
               <p className="opacity-50 text-sm">{list.description}</p>
             </div>
             <ChevronRightIcon className="w-8 h-8 my-auto ml-auto opacity-50"></ChevronRightIcon>
-          </div>
-        ))}
+          </Link>
+        ))
+      )}
       <AddButton type={"folder"} marginsBottom={false}></AddButton>
     </div>
   );

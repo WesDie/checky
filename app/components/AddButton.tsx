@@ -20,8 +20,8 @@ export default function AddButton({
         href={`?modal=true&add-${
           type === "folder" ? "list" : type === "main" ? "folder" : "item"
         }=true`}
-        className={`mt-auto py-4 px-8 bg-highlight-color w-fit h-fit mx-auto mb-${
-          marginsBottom ? "8" : "0"
+        className={`mt-auto py-4 px-8 bg-highlight-color w-fit h-fit mx-auto ${
+          marginsBottom ? "mb-8" : "mb-0"
         } rounded-full flex gap-1 hover:bg-transparent border-highlight-color border-2 transition cursor-pointer`}
       >
         <PlusIcon className="h-6 w-6 m-auto"></PlusIcon>
