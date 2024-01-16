@@ -57,7 +57,9 @@ const IconSelectInput = ({ value, defaultValue }: selectInputProps) => {
           !isemojiPanelOpen ? "hidden" : ""
         }`}
       >
-        <EmojiPanel onClick={handleEmojiClick}></EmojiPanel>
+        {isemojiPanelOpen && (
+          <EmojiPanel onClick={handleEmojiClick}></EmojiPanel>
+        )}
       </div>
     </div>
   );

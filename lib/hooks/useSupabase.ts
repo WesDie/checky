@@ -252,3 +252,11 @@ export async function useInsertNewList(
 
   return { message: "Green: Folder created successfully" };
 }
+
+export async function useGetAllEmoji() {
+  const { supabase } = await checkUser();
+
+  const { data } = await supabase.from("emojis").select("*");
+
+  return data;
+}
