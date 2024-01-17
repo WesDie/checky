@@ -14,7 +14,7 @@ export default async function Avatar({ tooltip }: Props) {
 
   return (
     <div
-      className={`w-8 h-8 bg-white rounded-full opacity-100 hover:opacity-80 hover:cursor-pointer transition`}
+      className={`w-8 h-8 bg-white rounded-full opacity-70 hover:opacity-100 hover:cursor-pointer transition`}
       style={{ background: gradientColors }}
     ></div>
   );

@@ -1,19 +1,34 @@
 "use client";
-import { useEffect } from "react";
+import { use, useEffect, useState } from "react";
 
 type Props = {
   userData: any;
+  children: React.ReactNode; // Added children prop
 };
 
-export default function UserPrefrences({ userData }: Props) {
+export default function UserPrefrences({ userData, children }: Props) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const clearBodyClasses = () => {
+    const bodyClasses = document.body.classList;
+    while (bodyClasses.length > 1) {
+      bodyClasses.remove(bodyClasses[1]);
+    }
+  };
+
   useEffect(() => {
     if (userData) {
-      document.documentElement.style.setProperty(
-        "--highlight-color",
-        userData[0].highlight_colors
-      );
+      setIsLoading(false);
+      clearBodyClasses();
+
+      document.body.classList.add(`${userData[0].theme}`);
+      document.body.classList.add(`highlight-${userData[0].highlight_colors}`);
     }
   }, [userData]);
 
-  return null;
+  if (isLoading) {
+    return null;
+  }
+
+  return <main className={`bg-dark text-white h-full`}>{children}</main>;
 }

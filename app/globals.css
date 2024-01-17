@@ -2,18 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --text-color: #000;
-  --background-color: #fff;
-  color-scheme: dark;
+* {
+  /* @apply transition-colors duration-200; */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text-color: #fff;
-    --background-color: #000;
-    --highlight-color: #00000000;
-  }
+:root {
+  --highlight-color: #000000;
+  --highlight-dark-color: #000000;
+}
+
+.dark {
+  color-scheme: dark;
+  --background-color: #000;
+
+  --dark-color: #000;
+  --white-color: #fff;
+
+  --text-color: #fff;
+  --secondary-text-color: #595959;
+
+  --background-color: #000;
+
+  --primary-bg-color: #1b1b1b;
+  --secondary-bg-color: #131313;
+  --tertiary-bg-color: #363636;
+  --quaternary-bg-color: #252525;
+}
+
+.light {
+  color-scheme: light;
+  --background-color: #fff;
+
+  --dark-color: #fff;
+  --white-color: #000;
+
+  --text-color: #000;
+  --secondary-text-color: #373737;
+
+  --background-color: #fff;
+
+  --primary-bg-color: #f5f5f5;
+  --secondary-bg-color: #ededed;
+  --tertiary-bg-color: #f0f0f0;
+  --quaternary-bg-color: #dcdcdc;
+}
+
+.highlight-orange {
+  --highlight-color: #ff6b00;
+  --highlight-dark-color: #6c4521;
+}
+.highlight-blue {
+  --highlight-color: #0057ff;
+  --highlight-dark-color: #213f6c;
+}
+.highlight-green {
+  --highlight-color: #00c408;
+  --highlight-dark-color: #356c21;
+}
+.highlight-red {
+  --highlight-color: #ff0000;
+  --highlight-dark-color: #6c2121;
 }
 
 .text-highlight-color {

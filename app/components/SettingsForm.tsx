@@ -31,9 +31,19 @@ export default function SettingsForm({ userData }: { userData: UserData[] }) {
 
   const handleChange = (newValue: string, valueName: string) => {
     console.log(newValue, valueName);
-    if (valueName === "highlight_color") {
-      document.documentElement.style.setProperty("--highlight-color", newValue);
-    }
+    const bodyClasses = document.body.classList;
+
+    // if (valueName === "highlight_color") {
+    //   document.body.classList.remove(bodyClasses[2]);
+
+    //   document.body.classList.add(`highlight-${newValue}`);
+    // } else if (valueName === "theme") {
+    //   if (newValue === "dark") {
+    //     document.body.classList.replace("light", `${newValue}`);
+    //   } else {
+    //     document.body.classList.replace("dark", `${newValue}`);
+    //   }
+    // }
 
     setHasChanges(true);
   };
@@ -68,7 +78,7 @@ export default function SettingsForm({ userData }: { userData: UserData[] }) {
       <SelectInput
         selectedValue={highlight_colors ?? ""}
         value={"highlight_color"}
-        options={["orange", "blue", "green", "purple", "pink", "red"]}
+        options={["orange", "blue", "green", "red"]}
         formattedValue="Highlight Color"
         onChange={handleChange}
       />

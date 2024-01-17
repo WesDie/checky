@@ -21,10 +21,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={quicksand.className}>
-        {children}
-        <Modal></Modal>
-        {userData && <UserPrefrences userData={userData} />}
+      <body className={`${quicksand.className}`}>
+        {userData && (
+          <UserPrefrences userData={userData}>
+            {children}
+            <Modal></Modal>
+          </UserPrefrences>
+        )}
       </body>
     </html>
   );

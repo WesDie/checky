@@ -9,17 +9,22 @@ const config: Config = {
   theme: {
     colors: {
       transparent: "transparent",
-      white: "#FFF",
-      dark: "#000",
       red: "#cf0000",
       green: "#017d01",
-      "primary-bg": "#1B1B1B",
-      "secondary-bg": "#131313",
-      "tertiary-bg": "#363636",
-      "quaternary-bg": "#252525",
-      "secondary-text": "#595959",
-      "highlight-color": "#FF6B00",
-      "highlight-dark": "#6C4521",
+
+      dark: "var(--dark-color)",
+      white: "var(--white-color)",
+
+      "primary-bg": "var(--primary-bg-color)",
+      "secondary-bg": "var(--secondary-bg-color)",
+      "tertiary-bg": "var(--tertiary-bg-color)",
+      "quaternary-bg": "var(--quaternary-bg-color)",
+
+      "text-color": "var(--text-color)",
+      "secondary-text": "var(--secondary-text-color)",
+
+      "highlight-color": "var(--highlight-color)",
+      "highlight-dark": "var(--highlight-dark-color)",
     },
     extend: {
       backgroundImage: {
@@ -29,6 +34,7 @@ const config: Config = {
       },
     },
   },
+  darkMode: "class",
   plugins: [],
 };
 export default config;
