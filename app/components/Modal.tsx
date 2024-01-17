@@ -26,7 +26,15 @@ const initialState = {
 };
 
 export default function Modal() {
-  const [state, formAction] = useFormState(useInsertNewList, initialState);
+  const [stateInsertFolder, formActionInsertFolder] = useFormState(
+    useInsertNewFolder,
+    initialState
+  );
+  const [stateInsertList, formActionInsertList] = useFormState(
+    useInsertNewList,
+    initialState
+  );
+
   const searchParams = useSearchParams();
   const modal = searchParams.get("modal");
   const addFolderModal = searchParams.get("add-folder");
@@ -46,8 +54,7 @@ export default function Modal() {
       <div className="w-[450px] h-fit m-auto bg-dark p-6 rounded absolute top-0 left-0 right-0 bottom-0 flex flex-col">
         <div className="flex mb-6">
           <p className="text-lg my-auto">
-            {addFolderModal && "Add Folder"}
-            {addListModal && "Add List"}
+            {addFolderModal ? "Add Folder" : addListModal ? "Add List" : ""}
           </p>
           <Link
             href={pathname}
@@ -56,15 +63,17 @@ export default function Modal() {
             <XMarkIcon></XMarkIcon>
           </Link>
         </div>
-        <p
+        {/* <p
           className={`${
-            state?.message?.startsWith("Red:") ? "text-red" : "text-green"
+            stateInsertFolder?.message?.startsWith("Red:")
+              ? "text-red"
+              : "text-green"
           } mb-4`}
         >
-          {state?.message?.split(": ")[1]}
-        </p>
+          {stateInsertFolder?.message?.split(": ")[1]}
+        </p> */}
         {addFolderModal && (
-          <form className="flex flex-col gap-4" action={formAction}>
+          <form className="flex flex-col gap-4" action={formActionInsertFolder}>
             <div className="flex gap-4">
               <InputBox
                 value="name"
@@ -87,7 +96,7 @@ export default function Modal() {
           </form>
         )}
         {addListModal && (
-          <form className="flex flex-col gap-4" action={formAction}>
+          <form className="flex flex-col gap-4" action={formActionInsertList}>
             <div className="flex gap-4">
               <InputBox
                 value="title"

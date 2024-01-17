@@ -1,9 +1,11 @@
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
+
 import Link from "next/link";
 
 export default function categoryFolder(
   index: number,
-  category: any
+  category: any,
+  listsAmount: number
 ): JSX.Element {
   return (
     <Link
@@ -16,7 +18,7 @@ export default function categoryFolder(
       </div>
       <div className="my-auto">
         <p>{category.name}</p>
-        <p className="opacity-50 text-sm">20 lists</p>
+        <p className="opacity-50 text-sm">{listsAmount} lists</p>
       </div>
       <ChevronRightIcon className="w-8 h-8 my-auto ml-auto opacity-50"></ChevronRightIcon>
     </Link>

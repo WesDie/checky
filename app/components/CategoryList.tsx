@@ -7,8 +7,10 @@ export default async function CategoryList() {
   return (
     <div className="flex flex-col gap-4 w-full px-6 py-6">
       {categories &&
-        categories.map((category: any, index: number) =>
-          categoryFolder(index, category)
+        categories &&
+        categories.folderData &&
+        categories.folderData.map((category: any, index: number) =>
+          categoryFolder(index, category, categories.listsAmount[index])
         )}
     </div>
   );

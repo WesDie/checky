@@ -1,5 +1,8 @@
 "use client";
-import { CakeIcon, HomeIcon } from "@heroicons/react/24/outline";
+import {
+  ClipboardDocumentListIcon,
+  HomeIcon,
+} from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -22,13 +25,13 @@ export default function NavCategoriesList({ categories }: Props) {
         />
       </Link>
       {categories &&
-        categories.map((category: any, index: number) => (
+        categories.folderData.map((category: any, index: number) => (
           <Link key={index} href={`/folder/${category.name}`}>
-            <CakeIcon
+            <ClipboardDocumentListIcon
               className={`opacity-${
                 folderName === `${category.name}` ? "100" : "50"
               } hover:cursor-pointer transition hover:opacity-100`}
-            ></CakeIcon>
+            ></ClipboardDocumentListIcon>
           </Link>
         ))}
       <Link

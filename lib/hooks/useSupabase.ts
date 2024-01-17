@@ -50,12 +50,28 @@ export async function useGetUserProfileData() {
 export async function useGetFoldersData() {
   const { supabase, session } = await checkUser();
 
-  const { data } = await supabase
+  const { data: folderData } = await supabase
     .from("users_folders")
     .select()
     .eq("userid", session?.user?.id ?? "");
 
-  return data;
+  const listsAmount: any[] = [];
+
+  for (const folder of folderData ?? []) {
+    const { data: folderLists } = await supabase
+      .from("lists_members")
+      .select()
+      .eq("user_folderid", folder.id)
+      .eq("userid", session?.user?.id ?? "");
+
+    if (folderLists === null || folderLists.length === 0) {
+      listsAmount.push(0);
+    } else {
+      listsAmount.push(folderLists.length);
+    }
+  }
+
+  return { folderData, listsAmount };
 }
 
 export async function useGetListsInFolderData(folder: string) {
@@ -68,21 +84,22 @@ export async function useGetListsInFolderData(folder: string) {
     .eq("name", folder ?? "")
     .eq("userid", session?.user?.id ?? "");
 
+  const folderIds = folderData?.map((folder) => folder.id) ?? [];
+
   // Get All lists ID's where is a member
   const { data: listsData } = await supabase
     .from("lists_members")
     .select()
-    .eq("userid", session?.user?.id ?? "");
+    .eq("userid", session?.user?.id ?? "")
+    .eq("user_folderid", folderIds);
 
-  const folderIds = folderData?.map((folder) => folder.id) ?? [];
   const listIds = listsData?.map((list) => list.listid) ?? [];
 
   // Get All lists where is a member plus where folderid is the same as previously fetched folder ID
   const { data: listsInFolder } = await supabase
     .from("lists")
     .select()
-    .in("id", listIds)
-    .in("folderid", folderIds);
+    .in("id", listIds);
 
   return listsInFolder;
 }
@@ -232,7 +249,6 @@ export async function useInsertNewList(
       title: title,
       description: description,
       icon: icon,
-      folderid: folderData?.[0].id,
     })
     .select();
 
@@ -241,6 +257,7 @@ export async function useInsertNewList(
     .insert({
       role: "member",
       listid: data?.[0].id,
+      user_folderid: folderData?.[0].id,
     });
 
   revalidatePath("/");
