@@ -17,7 +17,8 @@ interface ItemButtonProps {
 
 export default function ItemButton({ item }: ItemButtonProps): JSX.Element {
   // const [isComplete, setIsComplete] = useState(item.is_checked);
-  const markAsComplete = async () => {
+
+  const MarkAsComplete = async () => {
     useClickListItem(!item.is_checked, item.id);
     // setIsComplete(!isComplete);
   };
@@ -27,7 +28,7 @@ export default function ItemButton({ item }: ItemButtonProps): JSX.Element {
       className={`w-full py-2 px-4 bg-secondary-bg flex rounded gap-4 cursor-pointer transition active:scale-[99%] ${
         item.is_checked ? "opacity-50" : "hover:opacity-80"
       }`}
-      onClick={() => markAsComplete()}
+      onClick={() => MarkAsComplete()}
     >
       <div
         className={`border-highlight-color border-2  rounded-full w-8 h-8 my-auto hover:opacity-80 transition ${
