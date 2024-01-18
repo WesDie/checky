@@ -14,16 +14,16 @@ export default function Topbar() {
     type = "home";
   } else if (pathname === "/settings") {
     type = "settings";
-  } else if (pathname.includes("/folder") && !pathname.includes("/list")) {
-    type = "folder";
-    folderName = pathname.replace("/folder/", "");
-  } else if (pathname.includes("/folder") && pathname.includes("/list")) {
-    type = "list";
-    listName = pathname.substring(pathname.indexOf("/list/") + 6);
-    folderName = pathname
-      .substring(pathname.indexOf("/folder/") + 8)
-      .split("/")[0];
-    console.log(folderName);
+  } else if (pathname.startsWith("/folder")) {
+    const pathParts = pathname.split("/");
+    if (pathParts.length === 3) {
+      type = "folder";
+      folderName = pathParts[2];
+    } else if (pathParts.length === 4) {
+      type = "list";
+      folderName = pathParts[2];
+      listName = pathParts[3];
+    }
   }
 
   const renderLinks = () => {

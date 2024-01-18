@@ -19,7 +19,7 @@ export default async function FolderSideBar({
         lists &&
         lists.map((list) => (
           <Link
-            href={`/folder/${folder}/list/${list.title}`}
+            href={`/folder/${folder}/${list.id}`}
             key={list.id}
             className="w-full bg-primary-bg flex p-4 gap-4 rounded hover:cursor-pointer hover:opacity-80 transition"
           >

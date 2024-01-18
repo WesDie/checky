@@ -1,9 +1,9 @@
 "use client";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   userData: any;
-  children: React.ReactNode; // Added children prop
+  children: React.ReactNode;
 };
 
 export default function UserPrefrences({ userData, children }: Props) {
@@ -21,8 +21,10 @@ export default function UserPrefrences({ userData, children }: Props) {
       setIsLoading(false);
       clearBodyClasses();
 
-      document.body.classList.add(`${userData[0].theme}`);
-      document.body.classList.add(`highlight-${userData[0].highlight_colors}`);
+      document.body.classList.add(`${userData[0]?.theme || "dark"}`);
+      document.body.classList.add(
+        `highlight-${userData[0]?.highlight_colors || "blue"}`
+      );
     }
   }, [userData]);
 

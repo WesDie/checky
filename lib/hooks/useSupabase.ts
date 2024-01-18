@@ -246,7 +246,7 @@ export async function useInsertNewList(
   const { data, error: listMainError } = await supabase
     .from("lists")
     .insert({
-      title: title,
+      title: title.replace(/ /g, "-"),
       description: description,
       icon: icon,
     })
@@ -274,6 +274,29 @@ export async function useGetAllEmoji() {
   const { supabase } = await checkUser();
 
   const { data } = await supabase.from("emojis").select("*");
+
+  return data;
+}
+
+export async function useGetItemsInListData(listId: number) {
+  const { supabase } = await checkUser();
+
+  const { data } = await supabase
+    .from("lists_items")
+    .select()
+    .eq("listid", listId ?? "")
+    .order("created_at");
+
+  return data;
+}
+
+export async function useClickListItem(completed: boolean, itemId: number) {
+  const { supabase } = await checkUser();
+
+  const { data } = await supabase
+    .from("lists_items")
+    .update({ is_checked: completed })
+    .eq("id", itemId ?? "");
 
   return data;
 }
