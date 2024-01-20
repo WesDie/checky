@@ -1,11 +1,17 @@
 "use client";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useFormStatus, useFormState } from "react-dom";
+import { useState, useEffect } from "react";
 import { useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import InputBox from "./ui/InputBox";
 import IconSelectInput from "./IconSelectInput";
-import { useInsertNewFolder, useInsertNewList } from "@/lib/hooks/useSupabase";
+import {
+  useInsertNewFolder,
+  useInsertNewList,
+  useInsertNewListItem,
+  useGetSingleItemInList,
+} from "@/lib/hooks/useSupabase";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -34,16 +40,50 @@ export default function Modal() {
     useInsertNewList,
     initialState
   );
+  const [stateInsertListItem, formActionInsertListItem] = useFormState(
+    useInsertNewListItem,
+    initialState
+  );
+  const [stateUpdateListItem, formActionUpdateListItem] = useFormState(
+    useInsertNewListItem,
+    initialState
+  );
+
+  const [itemData, setItemData] = useState<any[] | null>(null);
+  const [itemDataLoading, setItemDataLoading] = useState(false);
 
   const searchParams = useSearchParams();
   const modal = searchParams.get("modal");
   const addFolderModal = searchParams.get("add-folder");
   const addListModal = searchParams.get("add-list");
+  const addListItemModal = searchParams.get("add-list-item");
+  const editListItemModal = searchParams.get("edit-list-item");
   const pathname = usePathname();
   const folderName = pathname.split("/")[2];
+  const listId = pathname.split("/")[3];
+  const itemId = searchParams.get("item-id");
 
   if (!modal || searchParams.size !== 2) {
-    return null;
+    if (!itemId && searchParams.size !== 3) {
+      return null;
+    }
+  }
+
+  if (itemId && editListItemModal && modal) {
+    const getSingleItemData = async () => {
+      const listItemData = await useGetSingleItemInList(listId, itemId);
+      setItemDataLoading(false);
+      console.log(listItemData);
+      setItemData(listItemData);
+    };
+
+    // useEffect(() => {
+    //   getSingleItemData();
+    // }, [itemId, listId]);
+
+    if (itemDataLoading) {
+      return null;
+    }
   }
 
   return (
@@ -54,7 +94,15 @@ export default function Modal() {
       <div className="w-[450px] h-fit m-auto bg-dark p-6 rounded absolute top-0 left-0 right-0 bottom-0 flex flex-col">
         <div className="flex mb-6">
           <p className="text-lg my-auto">
-            {addFolderModal ? "Add Folder" : addListModal ? "Add List" : ""}
+            {addFolderModal
+              ? "Add Folder"
+              : addListModal
+              ? "Add List"
+              : addListItemModal
+              ? "Add Item"
+              : editListItemModal
+              ? "Edit Item"
+              : ""}
           </p>
           <Link
             href={pathname}
@@ -116,6 +164,61 @@ export default function Modal() {
               maxLength={100}
             ></InputBox>
             <input type="hidden" value={folderName} name="folderName"></input>
+            <SubmitButton />
+          </form>
+        )}
+        {addListItemModal && (
+          <form
+            className="flex flex-col gap-4"
+            action={formActionInsertListItem}
+          >
+            <div className="flex gap-4">
+              <InputBox
+                value="name"
+                type="text"
+                formattedValue="Name"
+                maxLength={20}
+              ></InputBox>
+              <IconSelectInput
+                value={"icon"}
+                defaultValue="🎁"
+              ></IconSelectInput>
+            </div>
+            <InputBox
+              value="ExtraInfo"
+              type="text"
+              formattedValue="Extra information"
+              maxLength={100}
+            ></InputBox>
+            <input type="hidden" value={listId} name="listId"></input>
+            <SubmitButton />
+          </form>
+        )}
+        {editListItemModal && (
+          <form
+            className="flex flex-col gap-4"
+            action={formActionUpdateListItem}
+          >
+            <div className="flex gap-4">
+              <InputBox
+                value="name"
+                type="text"
+                formattedValue="Name"
+                maxLength={20}
+                defaultValue={itemData?.[0].name ?? ""}
+              ></InputBox>
+              <IconSelectInput
+                value={"icon"}
+                defaultValue="🎁"
+              ></IconSelectInput>
+            </div>
+            <InputBox
+              value="ExtraInfo"
+              type="text"
+              formattedValue="Extra information"
+              maxLength={100}
+            ></InputBox>
+            <input type="hidden" value={listId} name="listId"></input>
             <SubmitButton />
           </form>
         )}

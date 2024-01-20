@@ -36,7 +36,11 @@ export default function ItemButton({ item }: ItemButtonProps): JSX.Element {
         }`}
       ></div>
       <div className="my-auto">
-        <Link className="hover:underline" href="?modal=true&edit-list-item">
+        <Link
+          onClick={(e) => e.stopPropagation()}
+          className="hover:underline"
+          href={`?modal=true&edit-list-item=true&item-id=${item.id}`}
+        >
           {item.name}
         </Link>
         <p className="opacity-50 text-sm">1kg | Important</p>

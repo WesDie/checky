@@ -18,7 +18,7 @@ export default function AddButton({
     <>
       <Link
         href={`?modal=true&add-${
-          type === "folder" ? "list" : type === "main" ? "folder" : "item"
+          type === "folder" ? "list" : type === "main" ? "folder" : "list-item"
         }=true`}
         className={`mt-auto py-4 px-8 bg-highlight-color w-fit h-fit mx-auto ${
           marginsBottom ? "mb-8" : "mb-0"

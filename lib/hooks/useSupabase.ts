@@ -166,6 +166,62 @@ export async function useInsertNewFolder(
   return { message: "Green: Folder created successfully" };
 }
 
+export async function useInsertNewListItem(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
+  const { supabase, session } = await checkUser();
+
+  const listId = Number(formData.get("listId"));
+  if (!listId) {
+    return {
+      message: "Red: List is not selected",
+    };
+  }
+
+  const name = String(formData.get("name")).trim();
+  if (name === "") {
+    return {
+      message: "Red: Please fill in the name field",
+    };
+  }
+
+  if (name.length > 20 || name.length < 3) {
+    return {
+      message:
+        "Red: Folder name must be less than 20 characters and more than 3 characters",
+    };
+  }
+
+  const extraInfo = formData?.get("extraInfo");
+  if (typeof extraInfo === "string" && extraInfo.length > 50) {
+    return {
+      message: "Red: Folder description must be less than 50 characters",
+    };
+  }
+
+  if (formData.get("icon") === null) {
+    return {
+      message: "Red: Please select an icon",
+    };
+  }
+
+  const { error } = await supabase.from("lists_items").insert({
+    name: name,
+    extra_information: extraInfo,
+    icon: formData.get("icon"),
+    listid: listId,
+  });
+
+  if (error) {
+    return { message: "Red: something went wrong" };
+  }
+
+  return { message: "Green: Item created successfully" };
+}
+
 export async function useUpdateUserData(
   prevState: {
     message: string;
@@ -297,6 +353,20 @@ export async function useClickListItem(completed: boolean, itemId: number) {
     .from("lists_items")
     .update({ is_checked: completed })
     .eq("id", itemId ?? "");
+
+  return data;
+}
+
+export async function useGetSingleItemInList(listId: string, itemId: string) {
+  const { supabase } = await checkUser();
+
+  const { data } = await supabase
+    .from("lists_items")
+    .select()
+    .eq("listid", listId ?? "")
+    .eq("id", itemId ?? "");
+
+  console.log(data);
 
   return data;
 }
