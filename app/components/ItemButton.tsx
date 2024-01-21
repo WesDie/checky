@@ -24,28 +24,26 @@ export default function ItemButton({ item }: ItemButtonProps): JSX.Element {
   };
 
   return (
-    <div
+    <Link
       className={`w-full py-2 px-4 bg-secondary-bg flex rounded gap-4 cursor-pointer transition active:scale-[99%] ${
         item.is_checked ? "opacity-50" : "hover:opacity-80"
       }`}
-      onClick={() => MarkAsComplete()}
+      href={`?modal=true&edit-list-item=true&item-id=${item.id}`}
     >
       <div
         className={`border-highlight-color border-2  rounded-full w-8 h-8 my-auto hover:opacity-80 transition ${
           item.is_checked ? "bg-highlight-dark" : ""
         }`}
+        onClick={(e) => {
+          e.preventDefault();
+          MarkAsComplete();
+        }}
       ></div>
       <div className="my-auto">
-        <Link
-          onClick={(e) => e.stopPropagation()}
-          className="hover:underline"
-          href={`?modal=true&edit-list-item=true&item-id=${item.id}`}
-        >
-          {item.name}
-        </Link>
+        <p>{item.name}</p>
         <p className="opacity-50 text-sm">1kg | Important</p>
       </div>
       <h1 className="ml-auto text-2xl my-auto">{item.icon}</h1>
-    </div>
+    </Link>
   );
 }

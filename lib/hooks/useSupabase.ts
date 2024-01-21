@@ -21,6 +21,20 @@ const checkUser = async () => {
   return { supabase, session };
 };
 
+const checkIfUserIsListMember = async (
+  formData: FormData,
+  session: any,
+  supabase: any
+) => {
+  const { data: isListMember } = await supabase
+    .from("lists_members")
+    .select()
+    .eq("listid", formData.get("listId"))
+    .eq("userid", session?.user?.id ?? "");
+
+  return { isListMember };
+};
+
 export async function useGetProfileData() {
   const { supabase, session } = await checkUser();
 
@@ -196,7 +210,7 @@ export async function useInsertNewListItem(
   }
 
   const extraInfo = formData?.get("extraInfo");
-  if (typeof extraInfo === "string" && extraInfo.length > 50) {
+  if (typeof extraInfo === "string" && extraInfo.length > 100) {
     return {
       message: "Red: Folder description must be less than 50 characters",
     };
@@ -358,6 +372,8 @@ export async function useClickListItem(completed: boolean, itemId: number) {
 }
 
 export async function useGetSingleItemInList(listId: string, itemId: string) {
+  if (!listId || !itemId) return;
+
   const { supabase } = await checkUser();
 
   const { data } = await supabase
@@ -366,7 +382,70 @@ export async function useGetSingleItemInList(listId: string, itemId: string) {
     .eq("listid", listId ?? "")
     .eq("id", itemId ?? "");
 
-  console.log(data);
-
   return data;
+}
+
+export async function useUpdateListItem(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    formData,
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    return { message: "Red: You are not a member of this list" };
+  }
+
+  const { error } = await supabase
+    .from("lists_items")
+    .update({
+      name: formData.get("name"),
+      extra_information: formData.get("ExtraInfo"),
+      icon: formData.get("icon"),
+    })
+    .eq("listid", formData.get("listId"))
+    .eq("id", formData.get("itemId"));
+
+  if (error) {
+    return { message: "Red: something went wrong" };
+  }
+
+  return { message: "Green: Item updated successfully" };
+}
+
+export async function useDeleteListItem(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    formData,
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    console.log(isListMember);
+    return { message: "Red: You are not a member of this list" };
+  }
+
+  const { error } = await supabase
+    .from("lists_items")
+    .delete()
+    .eq("listid", formData.get("listId"))
+    .eq("id", formData.get("itemId"));
+
+  if (error) {
+    return { message: "Red: something went wrong" };
+  }
+
+  return { message: "Green: Item deleted successfully" };
 }
