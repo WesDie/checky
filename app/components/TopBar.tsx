@@ -12,7 +12,7 @@ export default function Topbar() {
   let type = "home";
   let folderName = "folderName";
 
-  const getListName = async () => {
+  const GetListName = async () => {
     const data: any[] = (await useGetListData(pathname.split("/")[3])) ?? [];
     const [listData] = data;
     setListName(listData?.title ?? "???");
@@ -34,7 +34,7 @@ export default function Topbar() {
   }
 
   useEffect(() => {
-    getListName();
+    GetListName();
   }, [pathname]);
 
   const renderLinks = () => {
