@@ -19,7 +19,7 @@ export default function ItemButton({ item }: ItemButtonProps): JSX.Element {
   // const [isComplete, setIsComplete] = useState(item.is_checked);
 
   const MarkAsComplete = async () => {
-    useClickListItem(!item.is_checked, item.id);
+    useClickListItem(!item.is_checked, item.id, item.listid);
     // setIsComplete(!isComplete);
   };
 
@@ -41,7 +41,7 @@ export default function ItemButton({ item }: ItemButtonProps): JSX.Element {
       ></div>
       <div className="my-auto">
         <p>{item.name}</p>
-        <p className="opacity-50 text-sm">1kg | Important</p>
+        <p className="opacity-50 text-sm">Test | Important</p>
       </div>
       <h1 className="ml-auto text-2xl my-auto">{item.icon}</h1>
     </Link>

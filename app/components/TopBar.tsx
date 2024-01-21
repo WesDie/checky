@@ -2,13 +2,21 @@
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useGetListData } from "@/lib/hooks/useSupabase";
+import { useState, useEffect } from "react";
 
 export default function Topbar() {
   const pathname = usePathname();
+  const [listName, setListName] = useState("???");
 
   let type = "home";
   let folderName = "folderName";
-  let listName = "listName";
+
+  const getListName = async () => {
+    const data: any[] = (await useGetListData(pathname.split("/")[3])) ?? [];
+    const [listData] = data;
+    setListName(listData?.title ?? "???");
+  };
 
   if (pathname === "/") {
     type = "home";
@@ -22,9 +30,12 @@ export default function Topbar() {
     } else if (pathParts.length === 4) {
       type = "list";
       folderName = pathParts[2];
-      listName = pathParts[3];
     }
   }
+
+  useEffect(() => {
+    getListName();
+  }, [pathname]);
 
   const renderLinks = () => {
     return (
@@ -34,13 +45,11 @@ export default function Topbar() {
         </Link>
         {type.includes("folder") && (
           <>
-            <p className="my-auto opacity-100">{folderName}</p>
+            <p className="my-auto">{folderName}</p>
             <EllipsisHorizontalIcon className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4" />
           </>
         )}
-        {type.includes("settings") && (
-          <p className="my-auto opacity-100">settings</p>
-        )}
+        {type.includes("settings") && <p className="my-auto">settings</p>}
         {type.includes("list") && (
           <>
             <Link
@@ -49,7 +58,7 @@ export default function Topbar() {
             >
               {folderName} /
             </Link>
-            <p className="my-auto opacity-100">{listName}</p>
+            <p className="my-auto">{listName}</p>
             <EllipsisHorizontalIcon className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4" />
           </>
         )}

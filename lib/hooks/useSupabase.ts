@@ -21,15 +21,30 @@ const checkUser = async () => {
   return { supabase, session };
 };
 
+const updateDateForList = async (listId: any) => {
+  const { supabase } = await checkUser();
+
+  const { error } = await supabase
+    .from("lists")
+    .update({
+      last_edited: new Date(),
+    })
+    .eq("id", listId);
+
+  if (error) {
+    return { message: "Red: something went wrong" };
+  }
+};
+
 const checkIfUserIsListMember = async (
-  formData: FormData,
+  listId: string,
   session: any,
   supabase: any
 ) => {
   const { data: isListMember } = await supabase
     .from("lists_members")
     .select()
-    .eq("listid", formData.get("listId"))
+    .eq("listid", listId)
     .eq("userid", session?.user?.id ?? "");
 
   return { isListMember };
@@ -59,6 +74,23 @@ export async function useGetUserProfileData() {
   const userProfileData = { ...data, email };
 
   return userProfileData;
+}
+
+export async function useGetListData(listId: string) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    listId,
+    session,
+    supabase
+  );
+  if (!isListMember) return;
+
+  const { data } = await supabase
+    .from("lists")
+    .select()
+    .eq("id", listId ?? "");
+
+  return data;
 }
 
 export async function useGetFoldersData() {
@@ -113,9 +145,45 @@ export async function useGetListsInFolderData(folder: string) {
   const { data: listsInFolder } = await supabase
     .from("lists")
     .select()
-    .in("id", listIds);
+    .in("id", listIds)
+    .order("last_edited", { ascending: false });
 
-  return listsInFolder;
+  const itemsAmount: any[] = [];
+
+  for (const list of listsInFolder ?? []) {
+    const { data: folderLists } = await supabase
+      .from("lists_items")
+      .select()
+      .eq("listid", list.id);
+
+    if (folderLists === null || folderLists.length === 0) {
+      itemsAmount.push(0);
+    } else {
+      itemsAmount.push(folderLists.length);
+    }
+  }
+
+  return { listsInFolder, itemsAmount };
+}
+
+export async function useGetItemsInListsData(listId: string) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    listId,
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    return { message: "Red: You are not a member of this list" };
+  }
+
+  const { data: itemsInList } = await supabase
+    .from("users_folders")
+    .select()
+    .eq("listid", listId ?? "");
+
+  return itemsInList;
 }
 
 export async function useInsertNewFolder(
@@ -233,6 +301,7 @@ export async function useInsertNewListItem(
     return { message: "Red: something went wrong" };
   }
 
+  updateDateForList(listId);
   return { message: "Green: Item created successfully" };
 }
 
@@ -333,7 +402,6 @@ export async function useInsertNewList(
   revalidatePath("/");
 
   if (listMainError || listMemberError) {
-    console.log(listMainError, listMemberError);
     return { message: "Red: something went wrong" };
   }
 
@@ -360,7 +428,11 @@ export async function useGetItemsInListData(listId: number) {
   return data;
 }
 
-export async function useClickListItem(completed: boolean, itemId: number) {
+export async function useClickListItem(
+  completed: boolean,
+  itemId: number,
+  listId: number
+) {
   const { supabase } = await checkUser();
 
   const { data } = await supabase
@@ -368,6 +440,7 @@ export async function useClickListItem(completed: boolean, itemId: number) {
     .update({ is_checked: completed })
     .eq("id", itemId ?? "");
 
+  updateDateForList(listId);
   return data;
 }
 
@@ -393,7 +466,7 @@ export async function useUpdateListItem(
 ) {
   const { supabase, session } = await checkUser();
   const { isListMember } = await checkIfUserIsListMember(
-    formData,
+    formData.get("listId")?.toString() ?? "",
     session,
     supabase
   );
@@ -416,6 +489,7 @@ export async function useUpdateListItem(
     return { message: "Red: something went wrong" };
   }
 
+  updateDateForList(formData.get("listId"));
   return { message: "Green: Item updated successfully" };
 }
 
@@ -427,13 +501,12 @@ export async function useDeleteListItem(
 ) {
   const { supabase, session } = await checkUser();
   const { isListMember } = await checkIfUserIsListMember(
-    formData,
+    formData.get("listId")?.toString() ?? "",
     session,
     supabase
   );
 
   if (!isListMember) {
-    console.log(isListMember);
     return { message: "Red: You are not a member of this list" };
   }
 
@@ -447,5 +520,6 @@ export async function useDeleteListItem(
     return { message: "Red: something went wrong" };
   }
 
+  updateDateForList(formData.get("listId"));
   return { message: "Green: Item deleted successfully" };
 }
