@@ -15,7 +15,8 @@ const checkUser = async () => {
   } = await supabase.auth.getSession();
 
   if (!session) {
-    throw new Error("No session");
+    // throw new Error("No session");
+    return { supabase, session: null };
   }
 
   return { supabase, session };
@@ -64,16 +65,18 @@ export async function useGetProfileData() {
 export async function useGetUserProfileData() {
   const { supabase, session } = await checkUser();
 
-  const { data } = await supabase
-    .from("user_profiles")
-    .select("*")
-    .eq("id", session?.user?.id ?? "");
+  if (session) {
+    const { data } = await supabase
+      .from("user_profiles")
+      .select("*")
+      .eq("id", session?.user?.id ?? "");
 
-  const { email } = session?.user ?? {};
+    const { email } = session?.user ?? {};
 
-  const userProfileData = { ...data, email };
+    const userProfileData = { ...data, email };
 
-  return userProfileData;
+    return userProfileData;
+  }
 }
 
 export async function useGetListData(listId: string) {
