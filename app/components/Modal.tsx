@@ -2,7 +2,12 @@
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useFormStatus, useFormState } from "react-dom";
 import { useState, useEffect } from "react";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import {
+  useSearchParams,
+  usePathname,
+  useRouter,
+  redirect,
+} from "next/navigation";
 import Link from "next/link";
 import InputBox from "./ui/InputBox";
 import IconSelectInput from "./IconSelectInput";
@@ -13,6 +18,8 @@ import {
   useGetSingleItemInList,
   useUpdateListItem,
   useDeleteListItem,
+  useUpdateFolderData,
+  useGetSingleFolder,
 } from "@/lib/hooks/useSupabase";
 
 function SubmitButton() {
@@ -54,21 +61,31 @@ export default function Modal() {
     useDeleteListItem,
     initialState
   );
+  const [stateUpdateFolderData, formActionUpdateFolderData] = useFormState(
+    useUpdateFolderData,
+    initialState
+  );
 
   const [itemData, setItemData] = useState<any[] | null>(null);
   const [itemDataLoading, setItemDataLoading] = useState(true);
+
+  const [folderData, setFolderData] = useState<any[] | null>(null);
+  const [folderDataLoading, setFolderDataLoading] = useState(true);
 
   const searchParams = useSearchParams();
   const modal = searchParams.get("modal");
   const addFolderModal = searchParams.get("add-folder");
   const addListModal = searchParams.get("add-list");
   const addListItemModal = searchParams.get("add-list-item");
+  const editFolderModal = searchParams.get("edit-folder");
   const editListItemModal = searchParams.get("edit-list-item");
   const pathname = usePathname();
   const router = useRouter();
   const folderName = pathname.split("/")[2];
   const listId = pathname.split("/")[3];
   const itemId = searchParams.get("item-id");
+
+  const [newFolderName, setNewFolderName] = useState(folderName);
 
   const GetSingleItemData = async () => {
     setItemDataLoading(true);
@@ -77,8 +94,21 @@ export default function Modal() {
     setItemData(listItemData as any[] | null);
   };
 
+  const GetSingleFolderData = async () => {
+    setFolderDataLoading(true);
+    const folderData = await useGetSingleFolder(folderName, !!editFolderModal);
+    setFolderDataLoading(false);
+    setFolderData(folderData as any[] | null);
+  };
+
+  const handleNewFolderNameChange = (newValue: string) => {
+    console.log(newValue);
+    setNewFolderName(newValue);
+  };
+
   useEffect(() => {
     GetSingleItemData();
+    GetSingleFolderData();
   }, [modal, itemId, editListItemModal, listId]);
 
   if (!modal || searchParams.size !== 2) {
@@ -103,6 +133,8 @@ export default function Modal() {
               ? "Add Item"
               : editListItemModal
               ? "Edit Item"
+              : editFolderModal
+              ? "Edit Folder"
               : ""}
           </p>
           <Link
@@ -195,6 +227,43 @@ export default function Modal() {
             <SubmitButton />
           </form>
         )}
+        {editFolderModal && !folderDataLoading ? (
+          <form
+            className="flex flex-col gap-4"
+            action={formActionUpdateFolderData}
+            onSubmit={() => {
+              setTimeout(() => {
+                router.push("/folder/" + newFolderName);
+              }, 100);
+            }}
+          >
+            <div className="flex gap-4">
+              <InputBox
+                value="name"
+                type="text"
+                formattedValue="Name"
+                maxLength={20}
+                onChange={handleNewFolderNameChange}
+                defaultValue={folderData?.[0].name ?? ""}
+              ></InputBox>
+              <IconSelectInput
+                value={"icon"}
+                defaultValue={folderData?.[0].icon ?? ""}
+              ></IconSelectInput>
+            </div>
+            <InputBox
+              value="description"
+              type="text"
+              formattedValue="Description"
+              maxLength={100}
+              defaultValue={folderData?.[0].description ?? ""}
+            ></InputBox>
+            <input type="hidden" value={folderName} name="folderName"></input>
+            <SubmitButton />
+          </form>
+        ) : editListItemModal ? (
+          <div></div>
+        ) : null}
         {editListItemModal && !itemDataLoading ? (
           <form
             className="flex flex-col gap-4"

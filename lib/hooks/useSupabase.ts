@@ -102,7 +102,8 @@ export async function useGetFoldersData() {
   const { data: folderData } = await supabase
     .from("users_folders")
     .select()
-    .eq("userid", session?.user?.id ?? "");
+    .eq("userid", session?.user?.id ?? "")
+    .order("created_at", { ascending: true });
 
   const listsAmount: any[] = [];
 
@@ -461,6 +462,23 @@ export async function useGetSingleItemInList(listId: string, itemId: string) {
   return data;
 }
 
+export async function useGetSingleFolder(
+  folderName: string,
+  isFolderModal: boolean
+) {
+  if (!folderName || !isFolderModal) return;
+
+  const { supabase, session } = await checkUser();
+
+  const { data } = await supabase
+    .from("users_folders")
+    .select()
+    .eq("name", folderName ?? "")
+    .eq("userid", session?.user?.id ?? "");
+
+  return data;
+}
+
 export async function useUpdateListItem(
   prevState: {
     message: string;
@@ -493,6 +511,33 @@ export async function useUpdateListItem(
   }
 
   updateDateForList(formData.get("listId"));
+  return { message: "Green: Item updated successfully" };
+}
+
+export async function useUpdateFolderData(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
+  const { supabase, session } = await checkUser();
+
+  const { error } = await supabase
+    .from("users_folders")
+    .update({
+      name: formData.get("name"),
+      description: formData.get("description"),
+      icon: formData.get("icon"),
+    })
+    .eq("userid", session?.user?.id ?? "")
+    .eq("name", formData.get("folderName"));
+
+  if (error) {
+    return { message: "Red: something went wrong" };
+  }
+
+  revalidatePath("/");
+
   return { message: "Green: Item updated successfully" };
 }
 

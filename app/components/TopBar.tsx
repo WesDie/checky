@@ -46,7 +46,12 @@ export default function Topbar() {
         {type.includes("folder") && (
           <>
             <p className="my-auto">{folderName}</p>
-            <EllipsisHorizontalIcon className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4" />
+            <Link
+              href={`?modal=true&edit-folder=true`}
+              className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4"
+            >
+              <EllipsisHorizontalIcon />
+            </Link>
           </>
         )}
         {type.includes("settings") && <p className="my-auto">settings</p>}
@@ -59,7 +64,12 @@ export default function Topbar() {
               {folderName} /
             </Link>
             <p className="my-auto">{listName}</p>
-            <EllipsisHorizontalIcon className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4" />
+            <Link
+              href={`?modal=true&edit-list=true`}
+              className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4"
+            >
+              <EllipsisHorizontalIcon />
+            </Link>
           </>
         )}
       </>

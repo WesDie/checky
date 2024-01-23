@@ -18,7 +18,7 @@ export default async function NavigationBar() {
       <div className="mt-auto mx-auto flex flex-col gap-4">
         <Avatar></Avatar>
         <Link href={"/settings"}>
-          <Cog6ToothIcon className="opacity-70 hover:opacity-100 hover:cursor-pointer transition"></Cog6ToothIcon>
+          <Cog6ToothIcon className="opacity-70 hover:opacity-100 hover:cursor-pointer transition hover:scale-95"></Cog6ToothIcon>
         </Link>
       </div>
     </div>

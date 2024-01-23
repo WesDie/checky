@@ -21,7 +21,7 @@ export default function NavCategoriesList({ categories }: Props) {
         <HomeIcon
           className={`opacity-${
             currentLink === "/" ? "100" : "50"
-          } hover:cursor-pointer transition hover:opacity-100`}
+          } hover:cursor-pointer transition hover:opacity-100 hover:scale-95`}
         />
       </Link>
       {categories &&
@@ -30,13 +30,13 @@ export default function NavCategoriesList({ categories }: Props) {
             <ClipboardDocumentListIcon
               className={`opacity-${
                 folderName === `${category.name}` ? "100" : "50"
-              } hover:cursor-pointer transition hover:opacity-100`}
+              } hover:cursor-pointer transition hover:opacity-100 hover:scale-95`}
             ></ClipboardDocumentListIcon>
           </Link>
         ))}
       <Link
         href="?modal=true&add-folder=true"
-        className="opacity-50 hover:opacity-100 hover:cursor-pointer transition"
+        className="opacity-50 hover:opacity-100 hover:cursor-pointer transition hover:scale-95"
       >
         <PlusCircleIcon></PlusCircleIcon>
       </Link>
