@@ -205,7 +205,7 @@ export async function useInsertNewFolder(
     };
   }
 
-  if (name.length > 20 || name.length < 3) {
+  if (name.length > 50 || name.length < 3) {
     return {
       message:
         "Red: Folder name must be less than 20 characters and more than 3 characters",
@@ -213,7 +213,7 @@ export async function useInsertNewFolder(
   }
 
   const description = formData?.get("description");
-  if (typeof description === "string" && description.length > 50) {
+  if (typeof description === "string" && description.length > 150) {
     return {
       message: "Red: Folder description must be less than 50 characters",
     };
@@ -274,7 +274,7 @@ export async function useInsertNewListItem(
     };
   }
 
-  if (name.length > 20 || name.length < 3) {
+  if (name.length > 150 || name.length < 3) {
     return {
       message:
         "Red: Folder name must be less than 20 characters and more than 3 characters",
@@ -282,7 +282,7 @@ export async function useInsertNewListItem(
   }
 
   const extraInfo = formData?.get("extraInfo");
-  if (typeof extraInfo === "string" && extraInfo.length > 100) {
+  if (typeof extraInfo === "string" && extraInfo.length > 250) {
     return {
       message: "Red: Folder description must be less than 50 characters",
     };
@@ -363,13 +363,13 @@ export async function useInsertNewList(
       message: "Red: Please fill in all the fields",
     };
   }
-  if (title.length > 20 || title.length < 3) {
+  if (title.length > 50 || title.length < 3) {
     return {
       message:
         "Red: List title must be less than 20 characters and more than 3 characters",
     };
   }
-  if (description && description.length > 50) {
+  if (description && description.length > 150) {
     return {
       message: "Red: List description must be less than 50 characters",
     };
