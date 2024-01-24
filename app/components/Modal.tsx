@@ -160,7 +160,7 @@ export default function Modal() {
                 value="name"
                 type="text"
                 formattedValue="Name"
-                maxLength={20}
+                maxLength={50}
               ></InputBox>
               <IconSelectInput
                 value={"icon"}
@@ -171,7 +171,7 @@ export default function Modal() {
               value="description"
               type="text"
               formattedValue="Description"
-              maxLength={100}
+              maxLength={150}
             ></InputBox>
             <SubmitButton />
           </form>
@@ -183,7 +183,7 @@ export default function Modal() {
                 value="title"
                 type="text"
                 formattedValue="Title"
-                maxLength={20}
+                maxLength={50}
               ></InputBox>
               <IconSelectInput
                 value={"icon"}
@@ -194,7 +194,7 @@ export default function Modal() {
               value="description"
               type="text"
               formattedValue="Description"
-              maxLength={100}
+              maxLength={150}
             ></InputBox>
             <input type="hidden" value={folderName} name="folderName"></input>
             <SubmitButton />
@@ -210,7 +210,7 @@ export default function Modal() {
                 value="name"
                 type="text"
                 formattedValue="Name"
-                maxLength={20}
+                maxLength={150}
               ></InputBox>
               <IconSelectInput
                 value={"icon"}
@@ -221,7 +221,7 @@ export default function Modal() {
               value="extraInfo"
               type="text"
               formattedValue="Extra information"
-              maxLength={100}
+              maxLength={250}
             ></InputBox>
             <input type="hidden" value={listId} name="listId"></input>
             <SubmitButton />
@@ -242,7 +242,7 @@ export default function Modal() {
                 value="name"
                 type="text"
                 formattedValue="Name"
-                maxLength={20}
+                maxLength={50}
                 onChange={handleNewFolderNameChange}
                 defaultValue={folderData?.[0].name ?? ""}
               ></InputBox>
@@ -255,14 +255,12 @@ export default function Modal() {
               value="description"
               type="text"
               formattedValue="Description"
-              maxLength={100}
+              maxLength={150}
               defaultValue={folderData?.[0].description ?? ""}
             ></InputBox>
             <input type="hidden" value={folderName} name="folderName"></input>
             <SubmitButton />
           </form>
-        ) : editListItemModal ? (
-          <div></div>
         ) : null}
         {editListItemModal && !itemDataLoading ? (
           <form
@@ -274,7 +272,7 @@ export default function Modal() {
                 value="name"
                 type="text"
                 formattedValue="Name"
-                maxLength={20}
+                maxLength={150}
                 defaultValue={itemData?.[0].name ?? ""}
               ></InputBox>
               <IconSelectInput
@@ -286,7 +284,7 @@ export default function Modal() {
               value="ExtraInfo"
               type="text"
               formattedValue="Extra information"
-              maxLength={100}
+              maxLength={250}
               defaultValue={itemData?.[0].extra_information ?? ""}
             ></InputBox>
             <input type="hidden" value={listId} name="listId"></input>
