@@ -7,7 +7,7 @@ export default async function App({ params }: { params: { listId: number } }) {
 
   return (
     <>
-      <div className="h-full w-full p-6">
+      <div className="h-full w-full p-6 relative after:absolute after:bg-gradient-to-t after:z-10 after:bottom-0 after:w-full after:h-20 from-dark to-transparent">
         <ItemList items={items || []}></ItemList>
       </div>
       <AddButton type={"list"}></AddButton>

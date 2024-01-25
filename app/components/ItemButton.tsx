@@ -25,13 +25,13 @@ export default function ItemButton({ item }: ItemButtonProps): JSX.Element {
 
   return (
     <Link
-      className={`w-full py-2 px-4 bg-secondary-bg flex rounded gap-4 cursor-pointer transition active:scale-[99%] ${
+      className={`w-full min-h-16 py-2 px-4 bg-secondary-bg flex rounded gap-4 cursor-pointer transition active:scale-[99%] ${
         item.is_checked ? "opacity-50" : "hover:opacity-80"
       }`}
       href={`?modal=true&edit-list-item=true&item-id=${item.id}`}
     >
       <div
-        className={`border-highlight-color border-2  rounded-full w-8 h-8 my-auto hover:opacity-80 transition ${
+        className={`border-highlight-color border-2  rounded-full min-w-8 min-h-8 my-auto hover:opacity-80 transition ${
           item.is_checked ? "bg-highlight-dark" : ""
         }`}
         onClick={(e) => {
@@ -40,7 +40,7 @@ export default function ItemButton({ item }: ItemButtonProps): JSX.Element {
         }}
       ></div>
       <div className="my-auto">
-        <p>{item.name}</p>
+        <p className="text-ellipsis overflow-hidden h-6 w-full">{item.name}</p>
         <p className="opacity-50 text-sm">Test | Important</p>
       </div>
       <h1 className="ml-auto text-2xl my-auto">{item.icon}</h1>
