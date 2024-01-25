@@ -479,6 +479,28 @@ export async function useGetSingleFolder(
   return data;
 }
 
+export async function useGetSingleList(listId: string, isListModal: boolean) {
+  if (!listId || !isListModal) return;
+
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    listId ?? "",
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    return { message: "Red: You are not a member of this list" };
+  }
+
+  const { data } = await supabase
+    .from("lists")
+    .select()
+    .eq("id", listId ?? "");
+
+  return data;
+}
+
 export async function useUpdateListItem(
   prevState: {
     message: string;
@@ -531,6 +553,42 @@ export async function useUpdateFolderData(
     })
     .eq("userid", session?.user?.id ?? "")
     .eq("name", formData.get("folderName"));
+
+  if (error) {
+    return { message: "Red: something went wrong" };
+  }
+
+  revalidatePath("/");
+
+  return { message: "Green: Item updated successfully" };
+}
+
+export async function useUpdateListData(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    formData.get("listId")?.toString() ?? "",
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    return { message: "Red: You are not a member of this list" };
+  }
+
+  const { error } = await supabase
+    .from("lists")
+    .update({
+      title: formData.get("name"),
+      description: formData.get("description"),
+      icon: formData.get("icon"),
+      delete_on_complete: formData.get("deleteOnComplete"),
+    })
+    .eq("id", formData.get("listId"));
 
   if (error) {
     return { message: "Red: something went wrong" };

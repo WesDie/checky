@@ -20,7 +20,10 @@ import {
   useDeleteListItem,
   useUpdateFolderData,
   useGetSingleFolder,
+  useUpdateListData,
+  useGetSingleList,
 } from "@/lib/hooks/useSupabase";
+import CheckMarkInput from "./CheckmarkInput";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -65,6 +68,10 @@ export default function Modal() {
     useUpdateFolderData,
     initialState
   );
+  const [stateUpdateListData, formActionUpdateListData] = useFormState(
+    useUpdateListData,
+    initialState
+  );
 
   const [itemData, setItemData] = useState<any[] | null>(null);
   const [itemDataLoading, setItemDataLoading] = useState(true);
@@ -72,13 +79,18 @@ export default function Modal() {
   const [folderData, setFolderData] = useState<any[] | null>(null);
   const [folderDataLoading, setFolderDataLoading] = useState(true);
 
+  const [listData, setListData] = useState<any[] | null>(null);
+  const [listDataLoading, setListDataLoading] = useState(true);
+
   const searchParams = useSearchParams();
   const modal = searchParams.get("modal");
   const addFolderModal = searchParams.get("add-folder");
   const addListModal = searchParams.get("add-list");
   const addListItemModal = searchParams.get("add-list-item");
   const editFolderModal = searchParams.get("edit-folder");
+  const editListModal = searchParams.get("edit-list");
   const editListItemModal = searchParams.get("edit-list-item");
+
   const pathname = usePathname();
   const router = useRouter();
   const folderName = pathname.split("/")[2];
@@ -101,14 +113,21 @@ export default function Modal() {
     setFolderData(folderData as any[] | null);
   };
 
+  const GetSingleListData = async () => {
+    setListDataLoading(true);
+    const listData = await useGetSingleList(listId, !!editListModal);
+    setListDataLoading(false);
+    setListData(listData as any[] | null);
+  };
+
   const handleNewFolderNameChange = (newValue: string) => {
-    console.log(newValue);
     setNewFolderName(newValue);
   };
 
   useEffect(() => {
     GetSingleItemData();
     GetSingleFolderData();
+    GetSingleListData();
   }, [modal, itemId, editListItemModal, listId]);
 
   if (!modal || searchParams.size !== 2) {
@@ -135,6 +154,8 @@ export default function Modal() {
               ? "Edit Item"
               : editFolderModal
               ? "Edit Folder"
+              : editListModal
+              ? "Edit List"
               : ""}
           </p>
           <Link
@@ -227,6 +248,40 @@ export default function Modal() {
             <SubmitButton />
           </form>
         )}
+        {editListModal && !listDataLoading ? (
+          <form
+            className="flex flex-col gap-4"
+            action={formActionUpdateListData}
+          >
+            <div className="flex gap-4">
+              <InputBox
+                value="name"
+                type="text"
+                formattedValue="Name"
+                maxLength={50}
+                defaultValue={listData?.[0].title ?? ""}
+              ></InputBox>
+              <IconSelectInput
+                value={"icon"}
+                defaultValue={listData?.[0].icon ?? ""}
+              ></IconSelectInput>
+            </div>
+            <InputBox
+              value="description"
+              type="text"
+              formattedValue="Description"
+              maxLength={150}
+              defaultValue={listData?.[0].description ?? ""}
+            ></InputBox>
+            <CheckMarkInput
+              value={"deleteOnComplete"}
+              displayValue="Delete items on complete"
+              defaultValue={listData?.[0].delete_on_complete}
+            ></CheckMarkInput>
+            <input type="hidden" value={listId} name="listId"></input>
+            <SubmitButton />
+          </form>
+        ) : null}
         {editFolderModal && !folderDataLoading ? (
           <form
             className="flex flex-col gap-4"

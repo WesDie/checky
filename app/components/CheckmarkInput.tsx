@@ -5,10 +5,15 @@ import { CheckIcon } from "@heroicons/react/24/solid";
 interface selectInputProps {
   value: string;
   displayValue: string;
+  defaultValue: boolean;
 }
 
-const CheckMarkInput = ({ value, displayValue }: selectInputProps) => {
-  const [isEnabled, setIsEnabled] = useState(false);
+const CheckMarkInput = ({
+  value,
+  displayValue,
+  defaultValue,
+}: selectInputProps) => {
+  const [isEnabled, setIsEnabled] = useState(defaultValue || false);
 
   return (
     <div className="flex flex-col gap-1 relative">
