@@ -42,7 +42,7 @@ export default function ItemList({ items }: { items: any[] }) {
   }, [supabase, router]);
 
   return (
-    <div className="w-full flex flex-col gap-4 max-h-[79vh] overflow-auto">
+    <div className="w-full flex flex-col gap-4 max-h-[82vh] overflow-auto">
       {items && items.length === 0 ? (
         <p className="opacity-50 m-auto">No items in list</p>
       ) : (

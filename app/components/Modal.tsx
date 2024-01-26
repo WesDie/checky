@@ -139,9 +139,9 @@ export default function Modal() {
   return (
     <>
       <Link href={pathname} className="cursor-default">
-        <div className="absolute top-0 bottom-0 left-0 right-0 bg-primary-bg opacity-30 flex"></div>
+        <div className="absolute top-0 bottom-0 left-0 right-0 bg-primary-bg opacity-30 flex z-20"></div>
       </Link>
-      <div className="w-[450px] h-fit m-auto bg-dark p-6 rounded absolute top-0 left-0 right-0 bottom-0 flex flex-col shadow-dark drop-shadow-lg">
+      <div className="w-[450px] h-fit m-auto bg-dark p-6 rounded absolute top-0 left-0 right-0 bottom-0 flex flex-col shadow-dark drop-shadow-lg z-30">
         <div className="flex mb-6">
           <p className="text-lg my-auto">
             {addFolderModal
@@ -358,7 +358,8 @@ export default function Modal() {
               </button>
             </div>
           </form>
-        ) : editListItemModal ? (
+        ) : null}
+        {itemDataLoading || folderDataLoading || listDataLoading ? (
           <div className="flex flex-col gap-4">
             <div className="flex gap-4">
               <div className="w-full h-[51px] animate-pulse bg-primary-bg rounded-md"></div>
@@ -367,7 +368,7 @@ export default function Modal() {
             <div className="w-full h-[51px] animate-pulse bg-primary-bg rounded-md"></div>
             <div className="flex gap-4 w-fit mx-auto">
               <div className="mt-6 py-2 px-8 h-[48px] w-[120px] animate-pulse bg-primary-bg rounded-full"></div>
-              <div className="mt-6 py-2 px-8 border-primary-bg border-2 h-[48px] w-[120px] animate-pulse rounded-full"></div>
+              <div className="mt-6 py-2 px-8 h-[48px] w-[120px] animate-pulse bg-primary-bg rounded-full"></div>
             </div>
           </div>
         ) : null}

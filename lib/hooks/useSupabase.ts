@@ -439,6 +439,25 @@ export async function useClickListItem(
 ) {
   const { supabase } = await checkUser();
 
+  const { data: listData } = await supabase
+    .from("lists")
+    .select()
+    .eq("id", listId ?? "");
+
+  if (listData?.[0]?.delete_on_complete === true) {
+    const { error } = await supabase
+      .from("lists_items")
+      .delete()
+      .eq("id", itemId ?? "");
+
+    if (error) {
+      return { message: "Red: something went wrong" };
+    } else {
+      updateDateForList(listId);
+      return { message: "Green: Item deleted successfully" };
+    }
+  }
+
   const { data } = await supabase
     .from("lists_items")
     .update({ is_checked: completed })
