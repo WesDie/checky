@@ -648,3 +648,44 @@ export async function useDeleteListItem(
   updateDateForList(formData.get("listId"));
   return { message: "Green: Item deleted successfully" };
 }
+
+export async function useDeleteList(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    formData.get("listId")?.toString() ?? "",
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    return { message: "Red: You are not a member of this list" };
+  }
+
+  const { error } = await supabase
+    .from("lists_items")
+    .delete()
+    .eq("listid", formData.get("listId"));
+
+  const { error: listMemberError } = await supabase
+    .from("lists_members")
+    .delete()
+    .eq("listid", formData.get("listId"));
+
+  const { error: listError } = await supabase
+    .from("lists")
+    .delete()
+    .eq("id", formData.get("listId"));
+
+  if (error || listError || listMemberError) {
+    return { message: "Red: something went wrong" };
+  }
+
+  revalidatePath("/");
+
+  return { message: "Green: List deleted successfully" };
+}

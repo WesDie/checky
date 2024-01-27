@@ -22,6 +22,7 @@ import {
   useGetSingleFolder,
   useUpdateListData,
   useGetSingleList,
+  useDeleteList,
 } from "@/lib/hooks/useSupabase";
 import CheckMarkInput from "./CheckmarkInput";
 
@@ -62,6 +63,10 @@ export default function Modal() {
   );
   const [stateDeleteListItem, formActionDeleteListItem] = useFormState(
     useDeleteListItem,
+    initialState
+  );
+  const [stateDeleteList, formActionDeleteList] = useFormState(
+    useDeleteList,
     initialState
   );
   const [stateUpdateFolderData, formActionUpdateFolderData] = useFormState(
@@ -279,7 +284,23 @@ export default function Modal() {
               defaultValue={listData?.[0].delete_on_complete}
             ></CheckMarkInput>
             <input type="hidden" value={listId} name="listId"></input>
-            <SubmitButton />
+            <div className="flex gap-4 w-fit mx-auto">
+              <SubmitButton />
+              <button
+                className="mt-6 py-2 px-8 hover:bg-red w-fit h-fit mx-auto rounded-full flex gap-1 bg-transparent border-red border-2 transition disabled:opacity-50 disabled:bg-transparent"
+                formAction={formActionDeleteList}
+                type="submit"
+                onClick={() => {
+                  const newPathnameFolder = pathname.slice(
+                    0,
+                    pathname.lastIndexOf("/")
+                  );
+                  router.push(newPathnameFolder);
+                }}
+              >
+                <p className="m-auto text-lg">Delete</p>
+              </button>
+            </div>
           </form>
         ) : null}
         {editFolderModal && !folderDataLoading ? (
