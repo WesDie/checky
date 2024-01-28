@@ -537,21 +537,37 @@ export async function useUpdateListItem(
     return { message: "Red: You are not a member of this list" };
   }
 
+  const listId = formData.get("listId");
+  const itemId = formData.get("itemId");
+  const name = formData.get("name");
+  const extraInfo = formData.get("ExtraInfo");
+  const icon = formData.get("icon");
+
+  if (!listId || !itemId || !name) {
+    return { message: "Red: Invalid form data" };
+  }
+
+  if (extraInfo && extraInfo.toString().length > 250) {
+    return {
+      message: "Red: Extra information must be less than 250 characters",
+    };
+  }
+
   const { error } = await supabase
     .from("lists_items")
     .update({
-      name: formData.get("name"),
-      extra_information: formData.get("ExtraInfo"),
-      icon: formData.get("icon"),
+      name: name,
+      extra_information: extraInfo,
+      icon: icon,
     })
-    .eq("listid", formData.get("listId"))
-    .eq("id", formData.get("itemId"));
+    .eq("listid", listId)
+    .eq("id", itemId);
 
   if (error) {
-    return { message: "Red: something went wrong" };
+    return { message: "Red: Something went wrong" };
   }
 
-  updateDateForList(formData.get("listId"));
+  updateDateForList(listId);
   return { message: "Green: Item updated successfully" };
 }
 
@@ -563,18 +579,35 @@ export async function useUpdateFolderData(
 ) {
   const { supabase, session } = await checkUser();
 
+  if (!session || !session.user || !session.user.id) {
+    return { message: "Red: User session not found" };
+  }
+
+  const folderName = formData.get("folderName");
+  const name = formData.get("name");
+  const description = formData.get("description");
+  const icon = formData.get("icon");
+
+  if (!folderName || !name) {
+    return { message: "Red: Invalid form data" };
+  }
+
+  if (description && description.toString.length > 150) {
+    return { message: "Red: Description must be less than 150 characters" };
+  }
+
   const { error } = await supabase
     .from("users_folders")
     .update({
-      name: formData.get("name"),
-      description: formData.get("description"),
-      icon: formData.get("icon"),
+      name: name,
+      description: description,
+      icon: icon,
     })
-    .eq("userid", session?.user?.id ?? "")
-    .eq("name", formData.get("folderName"));
+    .eq("userid", session.user.id)
+    .eq("name", folderName);
 
   if (error) {
-    return { message: "Red: something went wrong" };
+    return { message: "Red: Something went wrong" };
   }
 
   revalidatePath("/");
@@ -589,8 +622,27 @@ export async function useUpdateListData(
   formData: FormData
 ) {
   const { supabase, session } = await checkUser();
+
+  if (!session || !session.user || !session.user.id) {
+    return { message: "Red: User session not found" };
+  }
+
+  const listId = formData.get("listId");
+  const name = formData.get("name");
+  const description = formData.get("description");
+  const icon = formData.get("icon");
+  const deleteOnComplete = formData.get("deleteOnComplete");
+
+  if (!listId || !name) {
+    return { message: "Red: Invalid form data" };
+  }
+
+  if (description && description.toString.length > 150) {
+    return { message: "Red: Description must be less than 150 characters" };
+  }
+
   const { isListMember } = await checkIfUserIsListMember(
-    formData.get("listId")?.toString() ?? "",
+    listId.toString(),
     session,
     supabase
   );
@@ -602,15 +654,15 @@ export async function useUpdateListData(
   const { error } = await supabase
     .from("lists")
     .update({
-      title: formData.get("name"),
-      description: formData.get("description"),
-      icon: formData.get("icon"),
-      delete_on_complete: formData.get("deleteOnComplete"),
+      title: name,
+      description: description,
+      icon: icon,
+      delete_on_complete: deleteOnComplete,
     })
-    .eq("id", formData.get("listId"));
+    .eq("id", listId);
 
   if (error) {
-    return { message: "Red: something went wrong" };
+    return { message: "Red: Something went wrong" };
   }
 
   revalidatePath("/");
