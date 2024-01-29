@@ -1,6 +1,9 @@
 import { useGetListsInFolderData } from "@/lib/hooks/useSupabase";
 import AddButton from "./AddButton";
-import { ChevronRightIcon } from "@heroicons/react/24/solid";
+import {
+  ChevronRightIcon,
+  ArrowLeftEndOnRectangleIcon,
+} from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { format } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";
@@ -15,7 +18,13 @@ export default async function FolderSideBar({
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   return (
-    <div className="bg-secondary-bg h-full w-[475px] py-8 px-4 flex-col flex gap-4">
+    <div className="bg-secondary-bg h-full w-[475px] py-6 px-4 flex-col flex gap-4">
+      <div className="flex gap-2">
+        <div className="h-16 w-full bg-quaternary-bg rounded mb-4"></div>
+        <div className="w-16 h-16 rounded hover:bg-quaternary-bg flex p-2 hover:opacity-50 hover:cursor-pointer transition">
+          <ArrowLeftEndOnRectangleIcon className="opacity-20 m-auto"></ArrowLeftEndOnRectangleIcon>
+        </div>
+      </div>
       {listsData &&
       listsData.listsInFolder &&
       listsData.listsInFolder.length === 0 ? (

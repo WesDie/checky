@@ -253,6 +253,19 @@ export default function Modal() {
             <SubmitButton />
           </form>
         )}
+        {itemDataLoading || folderDataLoading || listDataLoading ? (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-4">
+              <div className="w-full h-[51px] animate-pulse bg-primary-bg rounded-md"></div>
+              <div className="w-[51px] h-[51px] animate-pulse rounded-full bg-primary-bg"></div>
+            </div>
+            <div className="w-full h-[51px] animate-pulse bg-primary-bg rounded-md"></div>
+            <div className="flex gap-4 w-fit mx-auto">
+              <div className="mt-6 py-2 px-8 h-[48px] w-[120px] animate-pulse bg-primary-bg rounded-full"></div>
+              <div className="mt-6 py-2 px-8 h-[48px] w-[120px] animate-pulse bg-primary-bg rounded-full"></div>
+            </div>
+          </div>
+        ) : null}
         {editListModal && !listDataLoading ? (
           <form
             className="flex flex-col gap-4"
@@ -379,19 +392,6 @@ export default function Modal() {
               </button>
             </div>
           </form>
-        ) : null}
-        {itemDataLoading || folderDataLoading || listDataLoading ? (
-          <div className="flex flex-col gap-4">
-            <div className="flex gap-4">
-              <div className="w-full h-[51px] animate-pulse bg-primary-bg rounded-md"></div>
-              <div className="w-[51px] h-[51px] animate-pulse rounded-full bg-primary-bg"></div>
-            </div>
-            <div className="w-full h-[51px] animate-pulse bg-primary-bg rounded-md"></div>
-            <div className="flex gap-4 w-fit mx-auto">
-              <div className="mt-6 py-2 px-8 h-[48px] w-[120px] animate-pulse bg-primary-bg rounded-full"></div>
-              <div className="mt-6 py-2 px-8 h-[48px] w-[120px] animate-pulse bg-primary-bg rounded-full"></div>
-            </div>
-          </div>
         ) : null}
       </div>
     </>
