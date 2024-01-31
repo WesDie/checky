@@ -79,13 +79,13 @@ export default function Modal() {
   );
 
   const [itemData, setItemData] = useState<any[] | null>(null);
-  const [itemDataLoading, setItemDataLoading] = useState(true);
+  const [itemDataLoading, setItemDataLoading] = useState(false);
 
   const [folderData, setFolderData] = useState<any[] | null>(null);
-  const [folderDataLoading, setFolderDataLoading] = useState(true);
+  const [folderDataLoading, setFolderDataLoading] = useState(false);
 
   const [listData, setListData] = useState<any[] | null>(null);
-  const [listDataLoading, setListDataLoading] = useState(true);
+  const [listDataLoading, setListDataLoading] = useState(false);
 
   const searchParams = useSearchParams();
   const modal = searchParams.get("modal");
@@ -253,7 +253,9 @@ export default function Modal() {
             <SubmitButton />
           </form>
         )}
-        {itemDataLoading || folderDataLoading || listDataLoading ? (
+        {(itemDataLoading && editListItemModal) ||
+        (folderDataLoading && editFolderModal) ||
+        (listDataLoading && editListModal) ? (
           <div className="flex flex-col gap-4">
             <div className="flex gap-4">
               <div className="w-full h-[51px] animate-pulse bg-primary-bg rounded-md"></div>

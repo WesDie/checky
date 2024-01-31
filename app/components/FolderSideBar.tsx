@@ -3,6 +3,7 @@ import AddButton from "./AddButton";
 import {
   ChevronRightIcon,
   ArrowLeftEndOnRectangleIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -20,10 +21,16 @@ export default async function FolderSideBar({
   return (
     <div className="bg-secondary-bg h-full w-[475px] py-6 px-4 flex-col flex gap-4">
       <div className="flex gap-2">
-        <div className="h-16 w-full bg-quaternary-bg rounded mb-4"></div>
-        <div className="w-16 h-16 rounded hover:bg-quaternary-bg flex p-2 hover:opacity-50 hover:cursor-pointer transition">
-          <ArrowLeftEndOnRectangleIcon className="opacity-20 m-auto"></ArrowLeftEndOnRectangleIcon>
+        <div className="flex h-14 w-full bg-quaternary-bg rounded mb-4 p-4 gap-4">
+          <MagnifyingGlassIcon className="w-6 h-6 my-auto opacity-30"></MagnifyingGlassIcon>
+          <input
+            className="bg-transparent focus:outline-none placeholder-secondary-text"
+            placeholder="Search in Folder"
+          ></input>
         </div>
+        {/* <div className="w-16 h-16 rounded hover:bg-quaternary-bg flex p-2 hover:opacity-50 hover:cursor-pointer transition">
+          <ArrowLeftEndOnRectangleIcon className="opacity-20 m-auto"></ArrowLeftEndOnRectangleIcon>
+        </div> */}
       </div>
       {listsData &&
       listsData.listsInFolder &&

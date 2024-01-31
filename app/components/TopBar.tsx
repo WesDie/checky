@@ -58,7 +58,7 @@ export default function Topbar() {
         {type.includes("list") && (
           <>
             <Link
-              href={`/folder/${folderName?.toLowerCase()}`}
+              href={`/folder/${folderName}`}
               className="my-auto opacity-50 mr-1"
             >
               {folderName} /
