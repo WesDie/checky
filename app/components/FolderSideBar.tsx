@@ -1,3 +1,4 @@
+"use client";
 import { useGetListsInFolderData } from "@/lib/hooks/useSupabase";
 import AddButton from "./AddButton";
 import {
@@ -8,15 +9,65 @@ import {
 import Link from "next/link";
 import { format } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";
+import { useEffect, useState } from "react";
+import { debounce } from "lodash";
 
-export default async function FolderSideBar({
-  folderName,
-}: {
-  folderName: string;
-}) {
+export default function FolderSideBar({ folderName }: { folderName: string }) {
+  const [listsData, setListsData] = useState<{
+    listsInFolder: any[] | null;
+    itemsAmount: any[];
+  }>({ listsInFolder: null, itemsAmount: [] });
+  const [isLoading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const folder = folderName;
-  const listsData = await useGetListsInFolderData(folder);
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const FetchData = async () => {
+    const data = await useGetListsInFolderData(folder);
+    setListsData(data || { listsInFolder: null, itemsAmount: [] });
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    FetchData();
+  }, []);
+
+  useEffect(() => {
+    const handleSearch = debounce((query: string) => {
+      setSearchQuery(query);
+    }, 300);
+
+    handleSearch(searchQuery);
+
+    return () => {
+      handleSearch.cancel();
+    };
+  }, [searchQuery]);
+
+  const filteredListsData =
+    listsData.listsInFolder?.filter((list: any) =>
+      list.title.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
+
+  if (isLoading)
+    return (
+      <div className="bg-secondary-bg h-full w-[475px] py-6 px-4 flex-col flex gap-4">
+        <div className="flex gap-2">
+          <div className="flex h-14 w-full bg-quaternary-bg rounded mb-4 p-4 gap-4">
+            <MagnifyingGlassIcon className="w-6 h-6 my-auto opacity-30"></MagnifyingGlassIcon>
+            <input
+              className="bg-transparent focus:outline-none placeholder-secondary-text"
+              placeholder="Search in Folder"
+              onChange={(e) => setSearchQuery(e.target.value)}
+            ></input>
+          </div>
+        </div>
+        {Array.from({ length: 10 }).map((_, index) => (
+          <div className="w-full h-[82px] bg-primary-bg flex p-4 gap-4 rounded transition animate-pulse"></div>
+        ))}
+      </div>
+    );
 
   return (
     <div className="bg-secondary-bg h-full w-[475px] py-6 px-4 flex-col flex gap-4">
@@ -26,19 +77,18 @@ export default async function FolderSideBar({
           <input
             className="bg-transparent focus:outline-none placeholder-secondary-text"
             placeholder="Search in Folder"
+            onChange={(e) => setSearchQuery(e.target.value)}
           ></input>
         </div>
         {/* <div className="w-16 h-16 rounded hover:bg-quaternary-bg flex p-2 hover:opacity-50 hover:cursor-pointer transition">
           <ArrowLeftEndOnRectangleIcon className="opacity-20 m-auto"></ArrowLeftEndOnRectangleIcon>
         </div> */}
       </div>
-      {listsData &&
-      listsData.listsInFolder &&
-      listsData.listsInFolder.length === 0 ? (
-        <p className="opacity-50 mx-auto">No lists in folder</p>
+      {listsData && filteredListsData && filteredListsData.length === 0 ? (
+        <p className="opacity-50 mx-auto">No lists found</p>
       ) : (
-        listsData.listsInFolder &&
-        listsData.listsInFolder.map((list, index) => {
+        filteredListsData &&
+        filteredListsData.map((list, index) => {
           const date = new Date(list.last_edited);
           const localDate = utcToZonedTime(date, timezone);
           const formattedDate = format(localDate, "dd-MM-yyyy");
