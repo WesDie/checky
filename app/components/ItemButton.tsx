@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useClickListItem } from "@/lib/hooks/useSupabase";
-// import { useState } from "react";
+import { useState } from "react";
 
 interface ItemButtonProps {
   item: {
@@ -13,15 +13,21 @@ interface ItemButtonProps {
     created_at: string;
     is_checked: boolean;
   };
+  tags: any[] | null;
 }
 
-export default function ItemButton({ item }: ItemButtonProps): JSX.Element {
-  // const [isComplete, setIsComplete] = useState(item.is_checked);
+export default function ItemButton({
+  item,
+  tags,
+}: ItemButtonProps): JSX.Element {
+  const [isComplete, setIsComplete] = useState(item.is_checked);
 
   const MarkAsComplete = async () => {
     useClickListItem(!item.is_checked, item.id, item.listid);
-    // setIsComplete(!isComplete);
+    setIsComplete(!isComplete);
   };
+
+  const allItemTags = tags?.filter((tag) => tag.itemid === item.id);
 
   return (
     <Link
@@ -41,7 +47,13 @@ export default function ItemButton({ item }: ItemButtonProps): JSX.Element {
       ></div>
       <div className="my-auto">
         <p className="text-ellipsis overflow-hidden h-6 w-full">{item.name}</p>
-        <p className="opacity-50 text-sm">Test | Important</p>
+        <div className="flex gap-1">
+          {allItemTags?.map((tag, index) => (
+            <p key={index} className="opacity-50 text-sm">
+              {tag.name} {index !== allItemTags.length - 1 && "|"}
+            </p>
+          ))}
+        </div>
       </div>
       <h1 className="ml-auto text-2xl my-auto">{item.icon}</h1>
     </Link>

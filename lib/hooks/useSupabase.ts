@@ -429,7 +429,13 @@ export async function useGetItemsInListData(listId: number) {
     .eq("listid", listId ?? "")
     .order("created_at");
 
-  return data;
+  const { data: tagData } = await supabase
+    .from("lists_tags")
+    .select()
+    .eq("listid", listId ?? "")
+    .order("created_at");
+
+  return { data, tagData };
 }
 
 export async function useClickListItem(

@@ -6,7 +6,11 @@ import type { Database } from "@/lib/database.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { revalidatePath } from "next/cache";
 
-export default function ItemList({ items }: { items: any[] }) {
+export default function ItemList({
+  items,
+}: {
+  items: { data: any[] | null; tagData: any[] | null };
+}) {
   const router = useRouter();
 
   const supabase = createClientComponentClient<Database>();
@@ -43,11 +47,17 @@ export default function ItemList({ items }: { items: any[] }) {
 
   return (
     <div className="w-full flex flex-col gap-4 max-h-[82vh] overflow-auto">
-      {items && items.length === 0 ? (
+      {items && items.data?.length === 0 ? (
         <p className="opacity-50 m-auto">No items in list</p>
       ) : (
         items &&
-        items.map((item) => <ItemButton item={item} key={item.id}></ItemButton>)
+        items.data?.map((item) => (
+          <ItemButton
+            item={item}
+            tags={items.tagData}
+            key={item.id}
+          ></ItemButton>
+        ))
       )}
     </div>
   );

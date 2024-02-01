@@ -64,7 +64,10 @@ export default function FolderSideBar({ folderName }: { folderName: string }) {
           </div>
         </div>
         {Array.from({ length: 10 }).map((_, index) => (
-          <div className="w-full h-[82px] bg-primary-bg flex p-4 gap-4 rounded transition animate-pulse"></div>
+          <div
+            key={index}
+            className="w-full h-[82px] bg-primary-bg flex p-4 gap-4 rounded transition animate-pulse"
+          ></div>
         ))}
       </div>
     );
