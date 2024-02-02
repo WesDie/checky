@@ -45,8 +45,31 @@ export default function ItemList({
     // }
   }, [supabase, router]);
 
+  const filteredTagData = items?.tagData?.reduce((acc, tag) => {
+    if (!acc.find((t: any) => t.name === tag.name)) {
+      acc.push(tag);
+    }
+    return acc;
+  }, []);
+
+  const handleTagClick = (tag: any) => {
+    console.log(tag);
+  };
+
   return (
     <div className="w-full flex flex-col gap-4 max-h-[82vh] overflow-auto">
+      <div className="flex w-full gap-4">
+        {items &&
+          filteredTagData?.map((tag: any) => (
+            <div
+              className="p-2 cursor-pointer bg-tertiary-bg rounded text-secondary-text"
+              key={tag.id}
+              onClick={() => handleTagClick(tag)}
+            >
+              {tag.name}
+            </div>
+          ))}
+      </div>
       {items && items.data?.length === 0 ? (
         <p className="opacity-50 m-auto">No items in list</p>
       ) : (
