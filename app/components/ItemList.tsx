@@ -1,8 +1,8 @@
 "use client";
-import ItemButton from "./ItemButton";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { Database } from "@/lib/database.types";
+import ItemButton from "./ItemButton";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { revalidatePath } from "next/cache";
 
@@ -12,18 +12,10 @@ export default function ItemList({
   items: { data: any[] | null; tagData: any[] | null };
 }) {
   const router = useRouter();
-
   const supabase = createClientComponentClient<Database>();
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
-    // async function getSession() {
-    //   const {
-    //     data: { session },
-    //   } = await supabase.auth.getSession();
-    // }
-    // getSession();
-
-    // if (session) {
     const channel = supabase
       .channel("lists_items")
       .on(
@@ -42,7 +34,6 @@ export default function ItemList({
     return () => {
       supabase.removeChannel(channel);
     };
-    // }
   }, [supabase, router]);
 
   const filteredTagData = items?.tagData?.reduce((acc, tag) => {
@@ -53,8 +44,21 @@ export default function ItemList({
   }, []);
 
   const handleTagClick = (tag: any) => {
-    console.log(tag);
+    if (selectedTags.includes(tag.name)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag.name));
+    } else {
+      setSelectedTags([...selectedTags, tag.name]);
+    }
   };
+
+  const filteredItems = selectedTags.length
+    ? items?.data?.filter((item) =>
+        filteredTagData.some(
+          (tag: any) =>
+            selectedTags.includes(tag.name) && tag.itemid === item.id
+        )
+      )
+    : items?.data;
 
   return (
     <div className="w-full flex flex-col gap-4 max-h-[82vh] overflow-auto">
@@ -62,7 +66,13 @@ export default function ItemList({
         {items &&
           filteredTagData?.map((tag: any) => (
             <div
-              className="p-2 cursor-pointer bg-tertiary-bg rounded text-secondary-text"
+              className={`p-2 cursor-pointer rounded text-secondary-text ${
+                selectedTags.includes(tag.name) ? "bg-white" : " bg-tertiary-bg"
+              } ${
+                selectedTags.length > 0 && !selectedTags.includes(tag.name)
+                  ? "opacity-50"
+                  : ""
+              }`}
               key={tag.id}
               onClick={() => handleTagClick(tag)}
             >
@@ -70,11 +80,11 @@ export default function ItemList({
             </div>
           ))}
       </div>
-      {items && items.data?.length === 0 ? (
+      {filteredItems && filteredItems.length === 0 ? (
         <p className="opacity-50 m-auto">No items in list</p>
       ) : (
-        items &&
-        items.data?.map((item) => (
+        filteredItems &&
+        filteredItems.map((item) => (
           <ItemButton
             item={item}
             tags={items.tagData}
