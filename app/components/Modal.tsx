@@ -129,7 +129,7 @@ export default function Modal() {
     setNewFolderName(newValue);
   };
 
-  const toggleTag = (tagId: string, listId: string) => {
+  const ToggleTag = (tagId: string, listId: string) => {
     useDeleteTagRow(tagId, listId);
 
     itemTagData?.forEach((tag) => {
@@ -399,7 +399,7 @@ export default function Modal() {
             <div className="flex gap-2">
               {itemTagData?.map((tag) => (
                 <div
-                  onClick={() => toggleTag(tag.id, listId)}
+                  onClick={() => ToggleTag(tag.id, listId)}
                   key={tag.id}
                   className={`p-2 ${
                     tag.itemid === itemData?.[0].id
