@@ -1,13 +1,8 @@
 "use client";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { useFormStatus, useFormState } from "react-dom";
 import { useState, useEffect } from "react";
-import {
-  useSearchParams,
-  usePathname,
-  useRouter,
-  redirect,
-} from "next/navigation";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import InputBox from "./ui/InputBox";
 import IconSelectInput from "./IconSelectInput";
@@ -23,6 +18,8 @@ import {
   useUpdateListData,
   useGetSingleList,
   useDeleteList,
+  useGetAllTagsFromList,
+  useDeleteTagRow,
 } from "@/lib/hooks/useSupabase";
 import CheckMarkInput from "./CheckmarkInput";
 
@@ -79,6 +76,7 @@ export default function Modal() {
   );
 
   const [itemData, setItemData] = useState<any[] | null>(null);
+  const [itemTagData, setItemTagData] = useState<any[] | null>(null);
   const [itemDataLoading, setItemDataLoading] = useState(false);
 
   const [folderData, setFolderData] = useState<any[] | null>(null);
@@ -107,8 +105,10 @@ export default function Modal() {
   const GetSingleItemData = async () => {
     setItemDataLoading(true);
     const listItemData = await useGetSingleItemInList(listId, itemId || "");
+    const listItemTagData = await useGetAllTagsFromList(listId);
     setItemDataLoading(false);
     setItemData(listItemData as any[] | null);
+    setItemTagData(listItemTagData as any[] | null);
   };
 
   const GetSingleFolderData = async () => {
@@ -127,6 +127,24 @@ export default function Modal() {
 
   const handleNewFolderNameChange = (newValue: string) => {
     setNewFolderName(newValue);
+  };
+
+  const toggleTag = (tagId: string, listId: string) => {
+    useDeleteTagRow(tagId, listId);
+
+    itemTagData?.forEach((tag) => {
+      if (tag.id === tagId) {
+        setItemTagData(
+          itemTagData?.map((tag) => {
+            if (tag.id === tagId) {
+              return { ...tag, itemid: null };
+            } else {
+              return tag;
+            }
+          })
+        );
+      }
+    });
   };
 
   useEffect(() => {
@@ -378,6 +396,24 @@ export default function Modal() {
               maxLength={250}
               defaultValue={itemData?.[0].extra_information ?? ""}
             ></InputBox>
+            <div className="flex gap-2">
+              {itemTagData?.map((tag) => (
+                <div
+                  onClick={() => toggleTag(tag.id, listId)}
+                  key={tag.id}
+                  className={`p-2 ${
+                    tag.itemid === itemData?.[0].id
+                      ? "bg-white"
+                      : "bg-primary-bg"
+                  } text-dark rounded cursor-pointer`}
+                >
+                  {tag.name}
+                </div>
+              ))}
+              <div className="h-10 p-2 w-10 bg-primary-bg my-auto rounded flex hover:opacity-80 transition cursor-pointer">
+                <PlusIcon className="opacity-50"></PlusIcon>
+              </div>
+            </div>
             <input type="hidden" value={listId} name="listId"></input>
             <input type="hidden" value={itemId ?? ""} name="itemId"></input>
             <div className="flex gap-4 w-fit mx-auto">

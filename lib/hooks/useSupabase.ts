@@ -487,6 +487,19 @@ export async function useGetSingleItemInList(listId: string, itemId: string) {
   return data;
 }
 
+export async function useGetAllTagsFromList(listId: string) {
+  if (!listId) return;
+
+  const { supabase } = await checkUser();
+
+  const { data } = await supabase
+    .from("lists_tags")
+    .select()
+    .eq("listid", listId ?? "");
+
+  return data;
+}
+
 export async function useGetSingleFolder(
   folderName: string,
   isFolderModal: boolean
@@ -746,4 +759,31 @@ export async function useDeleteList(
   revalidatePath("/");
 
   return { message: "Green: List deleted successfully" };
+}
+
+export async function useDeleteTagRow(tagid: string, listid: string) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    listid,
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    return { message: "Red: You are not a member of this list" };
+  }
+
+  const { error } = await supabase
+    .from("lists_tags")
+    .delete()
+    .eq("listid", listid)
+    .eq("id", tagid);
+
+  if (error) {
+    return;
+  }
+
+  revalidatePath("/");
+  updateDateForList(listid);
+  return;
 }
