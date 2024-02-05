@@ -11,14 +11,19 @@ interface UserData {
   profile_colors: string | null;
   theme: string | null;
   highlight_colors: string | null;
-  email: string;
 }
 
 const initialState = {
   message: "",
 };
 
-export default function SettingsForm({ userData }: { userData: UserData[] }) {
+export default function SettingsForm({
+  userData,
+  email,
+}: {
+  userData: UserData[];
+  email: string;
+}) {
   const [state, formAction] = useFormState(useUpdateUserData, initialState);
   const [hasChanges, setHasChanges] = useState(false);
   const { pending } = useFormStatus();
@@ -65,7 +70,7 @@ export default function SettingsForm({ userData }: { userData: UserData[] }) {
         type="text"
         formattedValue="Email"
         maxLength={25}
-        defaultValue={userData[0].email ?? ""}
+        defaultValue={email ?? ""}
         disabled={true}
       />
       <SelectInput
