@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import type { Database } from "@/lib/database.types";
 import ItemButton from "./ItemButton";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { revalidatePath } from "next/cache";
 
 export default function ItemList({
   items,
@@ -53,7 +52,7 @@ export default function ItemList({
 
   const filteredItems = selectedTags.length
     ? items?.data?.filter((item) =>
-        filteredTagData.some(
+        items?.tagData?.some(
           (tag: any) =>
             selectedTags.includes(tag.name) && tag.itemid === item.id
         )
@@ -66,7 +65,7 @@ export default function ItemList({
         {items &&
           filteredTagData?.map((tag: any) => (
             <div
-              className={`p-2 cursor-pointer rounded text-secondary-text ${
+              className={`p-2 cursor-pointer rounded text-secondary-text transition ${
                 selectedTags.includes(tag.name) ? "bg-white" : " bg-tertiary-bg"
               } ${
                 selectedTags.length > 0 && !selectedTags.includes(tag.name)
@@ -87,7 +86,7 @@ export default function ItemList({
         filteredItems.map((item) => (
           <ItemButton
             item={item}
-            tags={items.tagData}
+            tags={items?.tagData}
             key={item.id}
           ></ItemButton>
         ))

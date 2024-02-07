@@ -108,7 +108,19 @@ export default function Modal() {
     const listItemTagData = await useGetAllTagsFromList(listId);
     setItemDataLoading(false);
     setItemData(listItemData as any[] | null);
-    setItemTagData(listItemTagData as any[] | null);
+
+    const filteredItemTagData = listItemTagData?.reduce((acc, tag) => {
+      if (
+        !acc.find(
+          (t: any) => t.name === tag.name || tag.itemid !== listItemData?.[0].id
+        )
+      ) {
+        acc.push(tag);
+      }
+      return acc;
+    }, []);
+
+    setItemTagData(filteredItemTagData as any[] | null);
   };
 
   const GetSingleFolderData = async () => {
@@ -405,7 +417,7 @@ export default function Modal() {
                     tag.itemid === itemData?.[0].id
                       ? "bg-white"
                       : "bg-primary-bg"
-                  } text-dark rounded cursor-pointer`}
+                  } text-secondary-text rounded cursor-pointer`}
                 >
                   {tag.name}
                 </div>

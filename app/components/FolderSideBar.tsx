@@ -52,7 +52,7 @@ export default function FolderSideBar({ folderName }: { folderName: string }) {
 
   if (isLoading)
     return (
-      <div className="bg-secondary-bg h-full w-[475px] py-6 px-4 flex-col flex gap-4">
+      <div className="bg-secondary-bg h-full min-w-[340px] py-6 px-4 flex-col flex gap-4">
         <div className="flex gap-2">
           <div className="flex h-14 w-full bg-quaternary-bg rounded mb-4 p-4 gap-4">
             <MagnifyingGlassIcon className="w-6 h-6 my-auto opacity-30"></MagnifyingGlassIcon>
@@ -73,7 +73,7 @@ export default function FolderSideBar({ folderName }: { folderName: string }) {
     );
 
   return (
-    <div className="bg-secondary-bg h-full w-[475px] py-6 px-4 flex-col flex gap-4">
+    <div className="bg-secondary-bg h-full min-w-[340px] py-6 px-4 flex-col flex gap-4">
       <div className="flex gap-2">
         <div className="flex h-14 w-full bg-quaternary-bg rounded mb-4 p-4 gap-4">
           <MagnifyingGlassIcon className="w-6 h-6 my-auto opacity-30"></MagnifyingGlassIcon>
@@ -94,7 +94,13 @@ export default function FolderSideBar({ folderName }: { folderName: string }) {
         filteredListsData.map((list, index) => {
           const date = new Date(list.last_edited);
           const localDate = utcToZonedTime(date, timezone);
-          const formattedDate = format(localDate, "dd-MM-yyyy");
+          const currentDate = new Date();
+          const formattedDate =
+            currentDate.toDateString() === localDate.toDateString()
+              ? "Today at " + format(localDate, "HH:mm")
+              : currentDate.getDate() - localDate.getDate() === 1
+              ? "Yesterday"
+              : format(localDate, "dd-MM-yyyy");
 
           return (
             <Link

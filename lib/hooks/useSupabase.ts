@@ -35,6 +35,8 @@ const updateDateForList = async (listId: any) => {
   if (error) {
     return { message: "Red: something went wrong" };
   }
+
+  revalidatePath("/");
 };
 
 const checkIfUserIsListMember = async (
