@@ -3,7 +3,6 @@ import { useGetListsInFolderData } from "@/lib/hooks/useSupabase";
 import AddButton from "./AddButton";
 import {
   ChevronRightIcon,
-  ArrowLeftEndOnRectangleIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
@@ -11,7 +10,7 @@ import { format } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";
 import { useEffect, useState } from "react";
 import { debounce } from "lodash";
-import Avatar from "./Avatar";
+import ProfileIcon from "./ProfileIcon";
 
 export default function FolderSideBar({ folderName }: { folderName: string }) {
   const [listsData, setListsData] = useState<{
@@ -128,7 +127,7 @@ export default function FolderSideBar({ folderName }: { folderName: string }) {
                               index !== 0 ? "-ml-2" : ""
                             }`}
                           >
-                            <Avatar userData={member}></Avatar>
+                            <ProfileIcon userData={member}></ProfileIcon>
                           </div>
                         )
                       )}
