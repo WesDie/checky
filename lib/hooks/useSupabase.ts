@@ -169,7 +169,33 @@ export async function useGetListsInFolderData(folder: string) {
     }
   }
 
-  return { listsInFolder, itemsAmount };
+  const listsMembers: any[] = [];
+  let listMembersData: any[] = [];
+
+  for (const list of listsInFolder ?? []) {
+    const { data: listMembers } = await supabase
+      .from("lists_members")
+      .select()
+      .eq("listid", list.id);
+
+    if (listMembers !== null && listMembers.length > 1) {
+      listMembersData = [];
+
+      for (const member of listMembers) {
+        const { data: listMember } = await supabase
+          .from("user_profiles")
+          .select()
+          .eq("id", member.userid);
+
+        if (listMember) {
+          listMembersData.push(listMember);
+        }
+      }
+      listsMembers.push(listMembersData);
+    }
+  }
+
+  return { listsInFolder, itemsAmount, listsMembers };
 }
 
 export async function useGetItemsInListsData(listId: string) {

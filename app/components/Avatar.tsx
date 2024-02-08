@@ -2,19 +2,25 @@ import { useGetProfileData } from "@/lib/hooks/useSupabase";
 
 type Props = {
   tooltip?: boolean;
+  userData?: any;
 };
 
-export default async function Avatar({ tooltip }: Props) {
-  const data = await useGetProfileData();
+export default async function Avatar({ tooltip, userData }: Props) {
+  if (!userData) {
+    userData = await useGetProfileData();
+  }
 
-  const profileColors = data ? data[0]?.profile_colors?.split("||") : [];
+  const profileColors = userData
+    ? userData[0]?.profile_colors?.split("||")
+    : [];
+
   const gradientColors = profileColors
     ? `linear-gradient(135deg, ${profileColors[0]}, ${profileColors[1]})`
     : "";
 
   return (
     <div
-      className={`w-8 h-8 bg-white rounded-full opacity-70 hover:opacity-100 hover:cursor-pointer transition`}
+      className={`w-full h-full bg-white rounded-full`}
       style={{ background: gradientColors }}
     ></div>
   );

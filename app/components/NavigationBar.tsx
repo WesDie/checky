@@ -16,7 +16,9 @@ export default async function NavigationBar() {
         <NavCategoriesList categories={categories}></NavCategoriesList>
       </div>
       <div className="mt-auto mx-auto flex flex-col gap-4">
-        <Avatar></Avatar>
+        <div className="h-8 w-8 opacity-70 hover:opacity-100 hover:cursor-pointer transition">
+          <Avatar></Avatar>
+        </div>
         <Link href={"/settings"}>
           <Cog6ToothIcon className="opacity-70 hover:opacity-100 hover:cursor-pointer transition hover:scale-95"></Cog6ToothIcon>
         </Link>
