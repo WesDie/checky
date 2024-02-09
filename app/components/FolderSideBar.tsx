@@ -48,7 +48,7 @@ export default function FolderSideBar({ folderName }: { folderName: string }) {
     };
   }, [searchQuery]);
 
-  const filteredListsData =
+  const filteredListsData: any[] =
     listsData.listsInFolder?.filter((list: any) =>
       list.title.toLowerCase().includes(searchQuery.toLowerCase())
     ) || [];

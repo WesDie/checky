@@ -22,6 +22,7 @@ import {
   useDeleteTagRow,
 } from "@/lib/hooks/useSupabase";
 import CheckMarkInput from "./CheckmarkInput";
+import ListMembersInput from "./ListMembersInput";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -83,6 +84,7 @@ export default function Modal() {
   const [folderDataLoading, setFolderDataLoading] = useState(false);
 
   const [listData, setListData] = useState<any[] | null>(null);
+  const [listMemberData, setListMemeberData] = useState<any[] | null>(null);
   const [listDataLoading, setListDataLoading] = useState(false);
 
   const searchParams = useSearchParams();
@@ -132,9 +134,10 @@ export default function Modal() {
 
   const GetSingleListData = async () => {
     setListDataLoading(true);
-    const listData = await useGetSingleList(listId, !!editListModal);
+    const data = await useGetSingleList(listId, !!editListModal);
     setListDataLoading(false);
-    setListData(listData as any[] | null);
+    setListData(data?.data as any[] | null);
+    setListMemeberData(data?.listMembers as any[] | null);
   };
 
   const handleNewFolderNameChange = (newValue: string) => {
@@ -328,6 +331,9 @@ export default function Modal() {
               displayValue="Delete items on complete"
               defaultValue={listData?.[0].delete_on_complete}
             ></CheckMarkInput>
+            {listMemberData && (
+              <ListMembersInput listMembers={listMemberData}></ListMembersInput>
+            )}
             <input type="hidden" value={listId} name="listId"></input>
             <div className="flex gap-4 w-fit mx-auto">
               <SubmitButton />

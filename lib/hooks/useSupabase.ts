@@ -564,7 +564,17 @@ export async function useGetSingleList(listId: string, isListModal: boolean) {
     .select()
     .eq("id", listId ?? "");
 
-  return data;
+  const { data: listMembersData } = await supabase
+    .from("lists_members")
+    .select()
+    .eq("listid", listId ?? "");
+
+  const { data: listMembers } = await supabase
+    .from("user_profiles")
+    .select()
+    .in("id", listMembersData?.map((member) => member.userid) ?? []);
+
+  return { data, listMembers };
 }
 
 export async function useUpdateListItem(
