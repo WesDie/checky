@@ -825,3 +825,29 @@ export async function useDeleteTagRow(tagid: string, listid: string) {
   updateDateForList(listid);
   return;
 }
+
+export async function useDeleteListMember(userid: string, listid: string) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    listid,
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    return { message: "Red: You are not a member of this list" };
+  }
+
+  const { error } = await supabase
+    .from("lists_members")
+    .delete()
+    .eq("listid", listid)
+    .eq("userid", userid);
+
+  if (error) {
+    return;
+  }
+
+  revalidatePath("/");
+  return;
+}
