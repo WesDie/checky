@@ -10,7 +10,7 @@ interface selectInputProps {
 const ListMembersInput = ({ listMembers }: selectInputProps) => {
   const pathname = usePathname();
 
-  const logUserId = (member: any) => {
+  const LogUserId = (member: any) => {
     useDeleteListMember(member.id, pathname.split("/")[3]);
   };
 
@@ -29,7 +29,7 @@ const ListMembersInput = ({ listMembers }: selectInputProps) => {
               key={member.id}
               className="w-10 h-10 rounded-full flex cursor-pointer hover:opacity-70 transition relative group"
               style={{ background: gradientColors }}
-              onClick={() => logUserId(member)}
+              onClick={() => LogUserId(member)}
             >
               <p className="m-auto text-secondary-text group-hover:opacity-0">
                 {member.username.charAt(0)}

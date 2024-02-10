@@ -1,11 +1,9 @@
-import { useGetProfileData } from "@/lib/hooks/useSupabase";
-
 type Props = {
   tooltip?: boolean;
   userData: any;
 };
 
-export default async function ProfileIcon({ tooltip, userData }: Props) {
+export default function ProfileIcon({ tooltip, userData }: Props) {
   const profileColors = userData
     ? userData[0]?.profile_colors?.split("||")
     : [];
