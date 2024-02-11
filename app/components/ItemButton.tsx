@@ -31,7 +31,7 @@ export default function ItemButton({
 
   return (
     <Link
-      className={`w-full min-h-16 py-2 px-4 bg-secondary-bg flex rounded gap-4 cursor-pointer transition active:scale-[99%] ${
+      className={`w-full min-h-16 py-2 px-4 bg-secondary-bg flex rounded gap-4 cursor-pointer transition active:scale-[99.5%] ${
         item.is_checked ? "opacity-50" : "hover:opacity-80"
       }`}
       href={`?modal=true&edit-list-item=true&item-id=${item.id}`}
