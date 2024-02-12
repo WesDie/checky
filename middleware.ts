@@ -42,5 +42,6 @@ export const config = {
     "/settings",
     "/folder/[folderName]",
     "/folder/[folderName]/[listId]",
+    "/invite/[id]",
   ],
 };

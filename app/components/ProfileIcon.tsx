@@ -4,9 +4,7 @@ type Props = {
 };
 
 export default function ProfileIcon({ tooltip, userData }: Props) {
-  const profileColors = userData
-    ? userData[0]?.profile_colors?.split("||")
-    : [];
+  const profileColors = userData ? userData?.profile_colors?.split("||") : [];
 
   const gradientColors = profileColors
     ? `linear-gradient(135deg, ${profileColors[0]}, ${profileColors[1]})`

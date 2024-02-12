@@ -91,19 +91,30 @@ export default function FoldersList({
                 <div className="flex gap-2">
                   <h1>{list.title}</h1>
                   <div className="flex">
-                    {listsData.listsMembers[index]?.length > 0 &&
-                      listsData.listsMembers[index].map(
-                        (member: any, index: any) => (
-                          <div
-                            key={index} // Add a unique key prop
-                            className={`w-4 h-4 my-auto ${
-                              index !== 0 ? "-ml-2" : ""
-                            }`}
-                          >
-                            <ProfileIcon userData={member}></ProfileIcon>
-                          </div>
+                    {listsData.listsMembers.find(
+                      (memberObj) => memberObj.listid === list.id
+                    ) &&
+                      Object.values(
+                        listsData.listsMembers.find(
+                          (memberObj) => memberObj.listid === list.id
                         )
-                      )}
+                      ).map((member: any, memberIndex: any) => {
+                        if (Array.isArray(member)) {
+                          return member.map((memberDetail) => (
+                            <div
+                              key={memberIndex}
+                              className={`w-4 h-4 my-auto ${
+                                memberIndex !== 0 ? "-ml-2" : ""
+                              }`}
+                            >
+                              <ProfileIcon
+                                userData={memberDetail}
+                              ></ProfileIcon>
+                            </div>
+                          ));
+                        }
+                        return null;
+                      })}
                   </div>
                 </div>
                 <p className="opacity-50 text-sm">

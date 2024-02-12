@@ -13,18 +13,16 @@ export default async function AppLayout({
 
   return (
     <main className="h-full">
-      {userData && (
-        <UserPrefrences userData={userData}>
-          <div className="h-full w-full flex">
-            <NavigationBar></NavigationBar>
-            <div className="flex flex-col h-full w-full">
-              <Topbar></Topbar>
-              {children}
-            </div>
+      <UserPrefrences userData={userData}>
+        <div className="h-full w-full flex">
+          <NavigationBar></NavigationBar>
+          <div className="flex flex-col h-full w-full">
+            <Topbar></Topbar>
+            {children}
           </div>
-          <Modal></Modal>
-        </UserPrefrences>
-      )}
+        </div>
+        <Modal></Modal>
+      </UserPrefrences>
     </main>
   );
 }
