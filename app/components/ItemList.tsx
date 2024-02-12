@@ -8,7 +8,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 export default function ItemList({
   items,
 }: {
-  items: { data: any[] | null; tagData: any[] | null };
+  items: { data?: any[] | null; tagData?: any[] | null; message?: string };
 }) {
   const router = useRouter();
   const supabase = createClientComponentClient<Database>();

@@ -50,7 +50,11 @@ const checkIfUserIsListMember = async (
     .eq("listid", listId)
     .eq("userid", session?.user?.id ?? "");
 
-  return { isListMember };
+  if (isListMember === null || isListMember.length === 0) {
+    return { isListMember: false };
+  }
+
+  return { isListMember: true };
 };
 
 export async function useGetInviteData(inviteId: string) {
@@ -206,6 +210,18 @@ export async function useGetFoldersData() {
   }
 
   return { folderData, listsAmount };
+}
+
+export async function useGetSingleFolderData(folderName: string) {
+  const { supabase, session } = await checkUser();
+
+  const { data: folderData } = await supabase
+    .from("users_folders")
+    .select()
+    .eq("name", folderName ?? "")
+    .eq("userid", session?.user?.id ?? "");
+
+  return { folderData };
 }
 
 export async function useGetListsInFolderData(folder: string) {
@@ -531,7 +547,17 @@ export async function useGetAllEmoji() {
 }
 
 export async function useGetItemsInListData(listId: number) {
-  const { supabase } = await checkUser();
+  const { supabase, session } = await checkUser();
+
+  const { isListMember } = await checkIfUserIsListMember(
+    listId.toString(),
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    return { message: "This list does not exist" };
+  }
 
   const { data } = await supabase
     .from("lists_items")

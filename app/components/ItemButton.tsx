@@ -13,7 +13,7 @@ interface ItemButtonProps {
     created_at: string;
     is_checked: boolean;
   };
-  tags: any[] | null;
+  tags: any[] | null | undefined;
 }
 
 export default function ItemButton({
