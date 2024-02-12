@@ -22,6 +22,8 @@ export default function Topbar() {
     type = "home";
   } else if (pathname === "/settings") {
     type = "settings";
+  } else if (pathname.startsWith("/invite")) {
+    type = "invite";
   } else if (pathname.startsWith("/folder")) {
     const pathParts = pathname.split("/");
     if (pathParts.length === 3) {
@@ -46,15 +48,18 @@ export default function Topbar() {
         {type.includes("folder") && (
           <>
             <p className="my-auto">{folderName}</p>
-            <Link
-              href={`?modal=true&edit-folder=true`}
-              className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4"
-            >
-              <EllipsisHorizontalIcon />
-            </Link>
+            {folderName !== "shared" && (
+              <Link
+                href={`?modal=true&edit-folder=true`}
+                className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4"
+              >
+                <EllipsisHorizontalIcon />
+              </Link>
+            )}
           </>
         )}
         {type.includes("settings") && <p className="my-auto">settings</p>}
+        {type.includes("invite") && <p className="my-auto">invite</p>}
         {type.includes("list") && (
           <>
             <Link
@@ -82,6 +87,7 @@ export default function Topbar() {
       {type.includes("list") && <>{renderLinks()}</>}
       {type.includes("settings") && <>{renderLinks()}</>}
       {type.includes("home") && <p className="my-auto">Home</p>}
+      {type.includes("invite") && <>{renderLinks()}</>}
     </div>
   );
 }

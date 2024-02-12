@@ -360,7 +360,9 @@ export default function Modal() {
             action={formActionUpdateFolderData}
             onSubmit={() => {
               setTimeout(() => {
-                router.push("/folder/" + newFolderName);
+                if (newFolderName) {
+                  router.push("/folder/" + newFolderName);
+                }
               }, 100);
             }}
           >

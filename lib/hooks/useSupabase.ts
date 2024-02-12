@@ -53,6 +53,88 @@ const checkIfUserIsListMember = async (
   return { isListMember };
 };
 
+export async function useGetInviteData(inviteId: string) {
+  const { supabase } = await checkUser();
+
+  const { data } = await supabase
+    .from("lists_invites")
+    .select()
+    .eq("id", inviteId ?? "");
+
+  const { data: listData } = await supabase
+    .from("lists")
+    .select()
+    .eq("id", data?.[0]?.listid ?? "");
+
+  const { data: userData } = await supabase
+    .from("user_profiles")
+    .select()
+    .eq("id", data?.[0]?.created_by ?? "");
+
+  return { data, listData, userData };
+}
+
+export async function useAcceptListInvite(inviteId: string) {
+  const { supabase, session } = await checkUser();
+
+  const { data } = await supabase
+    .from("lists_invites")
+    .select()
+    .eq("id", inviteId ?? "");
+
+  const { data: sharedFolder } = await supabase
+    .from("users_folders")
+    .select()
+    .eq("userid", session?.user?.id ?? "")
+    .eq("name", "shared");
+
+  let userFolderId = sharedFolder?.[0]?.id;
+
+  const { data: sharedNewFolder, error } = userFolderId
+    ? { data: null, error: null }
+    : await supabase.from("users_folders").insert({
+        userid: session?.user?.id,
+        name: "shared",
+        description: "In this folder you can find all shared lists",
+        can_be_edited: false,
+        icon: "🔗",
+      });
+
+  if (error) {
+    return { message: "Red: something went wrong" };
+  }
+
+  if (userFolderId === undefined) {
+    userFolderId = (sharedNewFolder as any)?.[0]?.id;
+  }
+
+  const { data: existingMember } = await supabase
+    .from("lists_members")
+    .select()
+    .eq("listid", data?.[0]?.listid)
+    .eq("userid", session?.user?.id);
+
+  if (existingMember?.length !== 0) {
+    console.log(existingMember);
+    return { message: "Red: You are already a member of this list" };
+  }
+
+  const insertData = {
+    listid: data?.[0]?.listid,
+    userid: session?.user?.id,
+    role: "member",
+    user_folderid: userFolderId,
+  };
+
+  const insertResult = await supabase.from("lists_members").insert(insertData);
+
+  if (insertResult.error) {
+    return { message: "Red: something went wrong" };
+  }
+
+  return { data };
+}
+
 export async function useGetProfileData() {
   const { supabase, session } = await checkUser();
 
@@ -191,7 +273,7 @@ export async function useGetListsInFolderData(folder: string) {
           listMembersData.push(listMember);
         }
       }
-      listsMembers.push(listMembersData);
+      listsMembers.push({ listid: list.id, ...listMembersData });
     }
   }
 
@@ -660,6 +742,7 @@ export async function useUpdateFolderData(
       description: description,
       icon: icon,
     })
+    .eq("can_be_edited", true)
     .eq("userid", session.user.id)
     .eq("name", folderName);
 
