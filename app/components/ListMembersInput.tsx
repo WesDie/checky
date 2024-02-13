@@ -2,6 +2,7 @@
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useDeleteListMember } from "@/lib/hooks/useSupabase";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 interface selectInputProps {
   listMembers: any[];
@@ -9,6 +10,7 @@ interface selectInputProps {
 
 const ListMembersInput = ({ listMembers }: selectInputProps) => {
   const pathname = usePathname();
+  const [hoveredUsername, setHoveredUsername] = useState("");
 
   const LogUserId = (member: any) => {
     useDeleteListMember(member.id, pathname.split("/")[3]);
@@ -16,7 +18,12 @@ const ListMembersInput = ({ listMembers }: selectInputProps) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className=" text-secondary-text">Members</p>
+      <div className="flex gap-2">
+        <p className="text-secondary-text">Members</p>
+        {hoveredUsername && (
+          <p className="mt-auto text-[14px]">({hoveredUsername})</p>
+        )}
+      </div>
       <div className="relative flex gap-2">
         {listMembers.map((member) => {
           const profileColors = member.profile_colors?.split("||") || [];
@@ -30,6 +37,8 @@ const ListMembersInput = ({ listMembers }: selectInputProps) => {
               className="w-10 h-10 rounded-full flex cursor-pointer hover:opacity-70 transition relative group"
               style={{ background: gradientColors }}
               onClick={() => LogUserId(member)}
+              onMouseEnter={() => setHoveredUsername(member.username)}
+              onMouseLeave={() => setHoveredUsername("")}
             >
               <p className="m-auto text-secondary-text group-hover:opacity-0">
                 {member.username.charAt(0)}
