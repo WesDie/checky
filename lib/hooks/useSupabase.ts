@@ -78,6 +78,55 @@ export async function useGetInviteData(inviteId: string) {
   return { data, listData, userData };
 }
 
+export async function useGenerateInviteLink(listId: string) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    listId,
+    session,
+    supabase
+  );
+  if (!isListMember) return;
+
+  const { data: existingInvite } = await supabase
+    .from("lists_invites")
+    .select()
+    .eq("listid", listId ?? "");
+
+  if (existingInvite && existingInvite.length > 0) {
+    return { message: "Red: Invite link already exists" };
+  }
+
+  const { data } = await supabase
+    .from("lists_invites")
+    .insert({
+      listid: listId,
+      created_by: session?.user?.id,
+    })
+    .select("id");
+
+  return { data };
+}
+
+export async function useDeleteInviteLink(listId: string) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    listId,
+    session,
+    supabase
+  );
+  if (!isListMember) return;
+
+  const { error } = await supabase
+    .from("lists_invites")
+    .delete()
+    .eq("listid", listId ?? "");
+
+  if (error) {
+    return { message: "Red: something went wrong" };
+  }
+  return;
+}
+
 export async function useAcceptListInvite(inviteId: string) {
   const { supabase, session } = await checkUser();
 
@@ -119,7 +168,6 @@ export async function useAcceptListInvite(inviteId: string) {
     .eq("userid", session?.user?.id);
 
   if (existingMember?.length !== 0) {
-    console.log(existingMember);
     return { message: "Red: You are already a member of this list" };
   }
 
@@ -682,7 +730,12 @@ export async function useGetSingleList(listId: string, isListModal: boolean) {
     .select()
     .in("id", listMembersData?.map((member) => member.userid) ?? []);
 
-  return { data, listMembers };
+  const { data: listInvite } = await supabase
+    .from("lists_invites")
+    .select()
+    .eq("listid", listId ?? "");
+
+  return { data, listMembers, listInvite };
 }
 
 export async function useUpdateListItem(
@@ -945,6 +998,10 @@ export async function useDeleteListMember(userid: string, listid: string) {
 
   if (!isListMember) {
     return { message: "Red: You are not a member of this list" };
+  }
+
+  if (userid === session?.user?.id) {
+    return { message: "Red: You can't remove yourself from the list" };
   }
 
   const { error } = await supabase

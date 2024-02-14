@@ -12,7 +12,7 @@ const ListMembersInput = ({ listMembers }: selectInputProps) => {
   const pathname = usePathname();
   const [hoveredUsername, setHoveredUsername] = useState("");
 
-  const LogUserId = (member: any) => {
+  const DeleteUserFromList = (member: any) => {
     useDeleteListMember(member.id, pathname.split("/")[3]);
   };
 
@@ -36,7 +36,7 @@ const ListMembersInput = ({ listMembers }: selectInputProps) => {
               key={member.id}
               className="w-10 h-10 rounded-full flex cursor-pointer hover:opacity-70 transition relative group"
               style={{ background: gradientColors }}
-              onClick={() => LogUserId(member)}
+              onClick={() => DeleteUserFromList(member)}
               onMouseEnter={() => setHoveredUsername(member.username)}
               onMouseLeave={() => setHoveredUsername("")}
             >

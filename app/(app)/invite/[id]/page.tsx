@@ -7,6 +7,14 @@ import {
 export default async function App({ params }: { params: { id: string } }) {
   const data = await useGetInviteData(params.id);
 
+  if (data.listData?.[0] == undefined) {
+    return (
+      <div className="m-auto text-secondary-text">
+        Invite link does not exist
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-[400px] flex flex-col gap-4 m-auto text-center">
       <div className="w-fit mx-auto flex gap-4 border-[1px] border-solid border-primary-bg rounded px-4 py-2">

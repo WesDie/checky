@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import InputBox from "./ui/InputBox";
+import InviteGenerateInput from "./InviteGenerateInput";
 import IconSelectInput from "./IconSelectInput";
 import {
   useInsertNewFolder,
@@ -26,12 +27,17 @@ import ListMembersInput from "./ListMembersInput";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <button
       className="mt-6 py-2 px-8 bg-highlight-color w-fit h-fit mx-auto rounded-full flex gap-1 hover:bg-transparent border-highlight-color border-2 transition disabled:opacity-50 disabled:bg-transparent"
       disabled={pending}
       type="submit"
+      onClick={() => {
+        router.push(pathname);
+      }}
     >
       <p className="m-auto text-lg">Confirm</p>
     </button>
@@ -85,6 +91,7 @@ export default function Modal() {
 
   const [listData, setListData] = useState<any[] | null>(null);
   const [listMemberData, setListMemeberData] = useState<any[] | null>(null);
+  const [listInviteData, setListInviteData] = useState<any[] | null>(null);
   const [listDataLoading, setListDataLoading] = useState(false);
 
   const searchParams = useSearchParams();
@@ -138,6 +145,7 @@ export default function Modal() {
     setListDataLoading(false);
     setListData(data?.data as any[] | null);
     setListMemeberData(data?.listMembers as any[] | null);
+    setListInviteData(data?.listInvite as any[] | null);
   };
 
   const handleNewFolderNameChange = (newValue: string) => {
@@ -326,6 +334,16 @@ export default function Modal() {
               maxLength={150}
               defaultValue={listData?.[0].description ?? ""}
             ></InputBox>
+            <InviteGenerateInput
+              value="sharelink"
+              formattedValue="Share link"
+              defaultValue={
+                window.location.origin + "/invite/" + listInviteData?.[0]?.id ??
+                ""
+              }
+              listid={listData?.[0].id ?? ""}
+              defaultHasInviteLink={listInviteData?.[0]?.id !== undefined}
+            ></InviteGenerateInput>
             <CheckMarkInput
               value={"deleteOnComplete"}
               displayValue="Delete items on complete"
