@@ -1,5 +1,5 @@
 "use client";
-import { XMarkIcon, PlusIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useFormStatus, useFormState } from "react-dom";
 import { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ import {
   useInsertNewFolder,
   useInsertNewList,
   useInsertNewListItem,
+  useInsertNewListTag,
   useGetSingleItemInList,
   useUpdateListItem,
   useDeleteListItem,
@@ -21,6 +22,7 @@ import {
   useDeleteList,
   useGetAllTagsFromList,
   useDeleteTagRow,
+  useAddTagRow,
 } from "@/lib/hooks/useSupabase";
 import CheckMarkInput from "./CheckmarkInput";
 import ListMembersInput from "./ListMembersInput";
@@ -59,6 +61,10 @@ export default function Modal() {
   );
   const [stateInsertListItem, formActionInsertListItem] = useFormState(
     useInsertNewListItem,
+    initialState
+  );
+  const [stateInsertListTag, formActionInsertListTag] = useFormState(
+    useInsertNewListTag,
     initialState
   );
   const [stateUpdateListItem, formActionUpdateListItem] = useFormState(
@@ -102,6 +108,7 @@ export default function Modal() {
   const editFolderModal = searchParams.get("edit-folder");
   const editListModal = searchParams.get("edit-list");
   const editListItemModal = searchParams.get("edit-list-item");
+  const addListTagModal = searchParams.get("add-list-tag");
 
   const pathname = usePathname();
   const router = useRouter();
@@ -118,16 +125,25 @@ export default function Modal() {
     setItemDataLoading(false);
     setItemData(listItemData as any[] | null);
 
-    const filteredItemTagData = listItemTagData?.reduce((acc, tag) => {
-      if (
-        !acc.find(
-          (t: any) => t.name === tag.name || tag.itemid !== listItemData?.[0].id
-        )
-      ) {
-        acc.push(tag);
-      }
-      return acc;
-    }, []);
+    const filteredSelectedItemTagData = listItemTagData?.filter(
+      (tag) => tag.itemid === listItemData?.[0].id
+    );
+
+    const filteredNotSelectedItemTagData =
+      listItemTagData?.reduce((acc, tag) => {
+        if (
+          !filteredSelectedItemTagData?.find((t) => t.name === tag.name) &&
+          !acc.find((t: { name: any }) => t.name === tag.name)
+        ) {
+          acc.push(tag);
+        }
+        return acc;
+      }, []) || [];
+
+    const filteredItemTagData = [
+      ...(filteredSelectedItemTagData || []),
+      ...filteredNotSelectedItemTagData,
+    ];
 
     setItemTagData(filteredItemTagData as any[] | null);
   };
@@ -152,22 +168,17 @@ export default function Modal() {
     setNewFolderName(newValue);
   };
 
-  const ToggleTag = (tagId: string, listId: string) => {
-    useDeleteTagRow(tagId, listId);
-
-    itemTagData?.forEach((tag) => {
-      if (tag.id === tagId) {
-        setItemTagData(
-          itemTagData?.map((tag) => {
-            if (tag.id === tagId) {
-              return { ...tag, itemid: null };
-            } else {
-              return tag;
-            }
-          })
-        );
-      }
-    });
+  const ToggleTag = (
+    tagId: string,
+    listId: string,
+    itemid: string,
+    isSelected: boolean
+  ) => {
+    if (isSelected) {
+      useDeleteTagRow(tagId, listId);
+    } else {
+      useAddTagRow(tagId, listId, itemid);
+    }
   };
 
   useEffect(() => {
@@ -198,6 +209,8 @@ export default function Modal() {
               ? "Add Item"
               : editListItemModal
               ? "Edit Item"
+              : addListTagModal
+              ? "Add Tag"
               : editFolderModal
               ? "Edit Folder"
               : editListModal
@@ -289,6 +302,21 @@ export default function Modal() {
               type="text"
               formattedValue="Extra information"
               maxLength={250}
+            ></InputBox>
+            <input type="hidden" value={listId} name="listId"></input>
+            <SubmitButton />
+          </form>
+        )}
+        {addListTagModal && (
+          <form
+            className="flex flex-col gap-4"
+            action={formActionInsertListTag}
+          >
+            <InputBox
+              value="name"
+              type="text"
+              formattedValue="Name"
+              maxLength={150}
             ></InputBox>
             <input type="hidden" value={listId} name="listId"></input>
             <SubmitButton />
@@ -437,7 +465,14 @@ export default function Modal() {
             <div className="flex gap-2">
               {itemTagData?.map((tag) => (
                 <div
-                  onClick={() => ToggleTag(tag.id, listId)}
+                  onClick={() =>
+                    ToggleTag(
+                      tag.id,
+                      listId,
+                      itemData?.[0].id,
+                      tag.itemid === itemData?.[0].id
+                    )
+                  }
                   key={tag.id}
                   className={`p-2 ${
                     tag.itemid === itemData?.[0].id
@@ -448,9 +483,6 @@ export default function Modal() {
                   {tag.name}
                 </div>
               ))}
-              <div className="h-10 p-2 w-10 bg-primary-bg my-auto rounded flex hover:opacity-80 transition cursor-pointer">
-                <PlusIcon className="opacity-50"></PlusIcon>
-              </div>
             </div>
             <input type="hidden" value={listId} name="listId"></input>
             <input type="hidden" value={itemId ?? ""} name="itemId"></input>

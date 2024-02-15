@@ -483,6 +483,59 @@ export async function useInsertNewListItem(
   return { message: "Green: Item created successfully" };
 }
 
+export async function useInsertNewListTag(
+  prevState: {
+    message: string;
+  },
+  formData: FormData
+) {
+  const listId = Number(formData.get("listId"));
+  if (!listId) {
+    return {
+      message: "Red: List is not selected",
+    };
+  }
+
+  const { supabase, session } = await checkUser();
+
+  const { isListMember } = await checkIfUserIsListMember(
+    listId.toString(),
+    session,
+    supabase
+  );
+  if (!isListMember)
+    return {
+      message: "Red: You are not a member of this list",
+    };
+
+  const name = String(formData.get("name")).trim();
+  if (name === "") {
+    return {
+      message: "Red: Please fill in the name field",
+    };
+  }
+
+  if (name.length > 150 || name.length < 3) {
+    return {
+      message:
+        "Red: Tag name must be less than 20 characters and more than 3 characters",
+    };
+  }
+
+  const { error } = await supabase.from("lists_tags").insert({
+    name: name,
+    listid: listId,
+    itemid: null,
+  });
+
+  if (error) {
+    return { message: "Red: something went wrong" };
+  }
+
+  updateDateForList(listId);
+  return { message: "Green: Tag created successfully" };
+}
+
 export async function useUpdateUserData(
   prevState: {
     message: string;
@@ -978,6 +1031,50 @@ export async function useDeleteTagRow(tagid: string, listid: string) {
     .delete()
     .eq("listid", listid)
     .eq("id", tagid);
+
+  if (error) {
+    return;
+  }
+
+  revalidatePath("/");
+  updateDateForList(listid);
+  return;
+}
+
+export async function useAddTagRow(
+  tagid: string,
+  listid: string,
+  itemid: string
+) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    listid,
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    return { message: "Red: You are not a member of this list" };
+  }
+
+  const { data } = await supabase
+    .from("lists_tags")
+    .select("name")
+    .eq("listid", listid)
+    .eq("id", tagid);
+
+  if (data?.length === 0) {
+    return { message: "Red: Tag does not exist" };
+  }
+
+  const { error, data: additemData } = await supabase
+    .from("lists_tags")
+    .insert({
+      name: data?.[0]?.name,
+      listid: listid,
+      itemid: itemid,
+    })
+    .select();
 
   if (error) {
     return;

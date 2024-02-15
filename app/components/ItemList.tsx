@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import type { Database } from "@/lib/database.types";
 import ItemButton from "./ItemButton";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { PlusIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
 
 export default function ItemList({
   items,
@@ -61,12 +63,14 @@ export default function ItemList({
 
   return (
     <div className="w-full flex flex-col gap-4 max-h-[82vh] overflow-auto">
-      <div className="flex w-full gap-4">
+      <div className="flex w-full gap-2">
         {items &&
           filteredTagData?.map((tag: any) => (
             <div
               className={`p-2 cursor-pointer rounded text-secondary-text transition ${
-                selectedTags.includes(tag.name) ? "bg-white" : " bg-tertiary-bg"
+                selectedTags.includes(tag.name)
+                  ? "bg-white"
+                  : " bg-tertiary-bg hover:opacity-80"
               } ${
                 selectedTags.length > 0 && !selectedTags.includes(tag.name)
                   ? "opacity-50"
@@ -78,6 +82,12 @@ export default function ItemList({
               {tag.name}
             </div>
           ))}
+        <Link
+          className="h-10 p-2 w-10 bg-tertiary-bg my-auto rounded flex hover:opacity-80 transition cursor-pointer"
+          href={"?modal=true&add-list-tag=true"}
+        >
+          <PlusIcon className="opacity-50"></PlusIcon>
+        </Link>
       </div>
       {filteredItems && filteredItems.length === 0 ? (
         <p className="opacity-50 m-auto">No items in list</p>
