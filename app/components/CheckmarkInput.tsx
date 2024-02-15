@@ -6,12 +6,14 @@ interface selectInputProps {
   value: string;
   displayValue: string;
   defaultValue: boolean;
+  disabled?: boolean;
 }
 
 const CheckMarkInput = ({
   value,
   displayValue,
   defaultValue,
+  disabled,
 }: selectInputProps) => {
   const [isEnabled, setIsEnabled] = useState(defaultValue || false);
 
@@ -23,7 +25,10 @@ const CheckMarkInput = ({
         name={value}
         value={isEnabled.toString()}
         onClick={() => setIsEnabled(!isEnabled)}
-        className="appearance-none w-8 h-8 rounded bg-primary-bg cursor-pointer"
+        className={`appearance-none w-8 h-8 rounded bg-primary-bg ${
+          !disabled ? "cursor-pointer" : ""
+        }`}
+        disabled={disabled}
       />
       {isEnabled ? (
         <CheckIcon className="absolute bottom-0 fill-white w-8 h-8 p-1 pointer-events-none" />

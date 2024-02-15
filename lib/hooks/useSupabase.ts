@@ -625,7 +625,7 @@ export async function useInsertNewList(
   const { error: listMemberError } = await supabase
     .from("lists_members")
     .insert({
-      role: "member",
+      role: "owner",
       listid: data?.[0].id,
       user_folderid: folderData?.[0].id,
     });
@@ -783,12 +783,20 @@ export async function useGetSingleList(listId: string, isListModal: boolean) {
     .select()
     .in("id", listMembersData?.map((member) => member.userid) ?? []);
 
-  const { data: listInvite } = await supabase
-    .from("lists_invites")
-    .select()
-    .eq("listid", listId ?? "");
+  const userAccess = listMembersData?.find(
+    (member) => member.userid === session?.user?.id
+  )?.role;
 
-  return { data, listMembers, listInvite };
+  let listInvite: any[] | null = [];
+  if (userAccess === "owner") {
+    const { data: listInviteData } = await supabase
+      .from("lists_invites")
+      .select()
+      .eq("listid", listId ?? "");
+    listInvite = listInviteData;
+  }
+
+  return { data, listMembers, listInvite, userAccess };
 }
 
 export async function useUpdateListItem(
@@ -909,10 +917,6 @@ export async function useUpdateListData(
     return { message: "Red: Invalid form data" };
   }
 
-  if (description && description.toString.length > 150) {
-    return { message: "Red: Description must be less than 150 characters" };
-  }
-
   const { isListMember } = await checkIfUserIsListMember(
     listId.toString(),
     session,
@@ -921,6 +925,23 @@ export async function useUpdateListData(
 
   if (!isListMember) {
     return { message: "Red: You are not a member of this list" };
+  }
+
+  const { data: userMemberData } = await supabase
+    .from("lists_members")
+    .select("role")
+    .eq("listid", listId)
+    .eq("userid", session.user.id);
+
+  if (userMemberData?.[0]?.role !== "owner") {
+    return {
+      message:
+        "Red: You are not the owner of this list so you cant edit this list",
+    };
+  }
+
+  if (description && description.toString.length > 150) {
+    return { message: "Red: Description must be less than 150 characters" };
   }
 
   const { error } = await supabase

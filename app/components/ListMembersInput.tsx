@@ -6,9 +6,10 @@ import { useState } from "react";
 
 interface selectInputProps {
   listMembers: any[];
+  disabled?: boolean;
 }
 
-const ListMembersInput = ({ listMembers }: selectInputProps) => {
+const ListMembersInput = ({ listMembers, disabled }: selectInputProps) => {
   const pathname = usePathname();
   const [hoveredUsername, setHoveredUsername] = useState("");
 
@@ -34,16 +35,24 @@ const ListMembersInput = ({ listMembers }: selectInputProps) => {
           return (
             <div
               key={member.id}
-              className="w-10 h-10 rounded-full flex cursor-pointer hover:opacity-70 transition relative group"
+              className={`w-10 h-10 rounded-full flex ${
+                !disabled ? "hover:opacity-70 cursor-pointer" : "cursor-default"
+              } transition relative group`}
               style={{ background: gradientColors }}
-              onClick={() => DeleteUserFromList(member)}
+              onClick={!disabled ? () => DeleteUserFromList(member) : undefined}
               onMouseEnter={() => setHoveredUsername(member.username)}
               onMouseLeave={() => setHoveredUsername("")}
             >
-              <p className="m-auto text-secondary-text group-hover:opacity-0">
+              <p
+                className={`m-auto text-secondary-text ${
+                  !disabled ? "group-hover:opacity-0" : ""
+                }`}
+              >
                 {member.username.charAt(0)}
               </p>
-              <XMarkIcon className="absolute top-0 right-0 left-0 bottom-0 p-1 fill-secondary-text hidden opacity-80 group-hover:block" />
+              {!disabled ? (
+                <XMarkIcon className="absolute top-0 right-0 left-0 bottom-0 p-1 fill-secondary-text hidden opacity-80 group-hover:block" />
+              ) : null}
             </div>
           );
         })}

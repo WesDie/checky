@@ -95,6 +95,7 @@ export default function Modal() {
   const [folderDataLoading, setFolderDataLoading] = useState(false);
 
   const [listData, setListData] = useState<any[] | null>(null);
+  const [listDataEditable, setListDataEditable] = useState(false);
   const [listMemberData, setListMemeberData] = useState<any[] | null>(null);
   const [listInviteData, setListInviteData] = useState<any[] | null>(null);
   const [listDataLoading, setListDataLoading] = useState(false);
@@ -157,10 +158,16 @@ export default function Modal() {
   const GetSingleListData = async () => {
     setListDataLoading(true);
     const data = await useGetSingleList(listId, !!editListModal);
-    setListDataLoading(false);
+    console.log(data?.userAccess);
+    if (data?.userAccess === "owner") {
+      setListDataEditable(true);
+    } else {
+      setListDataEditable(false);
+    }
     setListData(data?.data as any[] | null);
     setListMemeberData(data?.listMembers as any[] | null);
     setListInviteData(data?.listInvite as any[] | null);
+    setListDataLoading(false);
   };
 
   const handleNewFolderNameChange = (newValue: string) => {
@@ -212,6 +219,9 @@ export default function Modal() {
               ? "Edit List"
               : ""}
           </p>
+          {!listDataEditable && editListModal ? (
+            <p className="my-auto opacity-50 text-[12px] ml-1">(read only)</p>
+          ) : null}
           <Link
             href={pathname}
             className="h-8 w-8 ml-auto opacity-100 hover:opacity-80 cursor-pointer transition"
@@ -334,7 +344,9 @@ export default function Modal() {
         ) : null}
         {editListModal && !listDataLoading ? (
           <form
-            className="flex flex-col gap-4"
+            className={`flex flex-col gap-4 ${
+              listDataEditable ? "" : "opacity-80"
+            }`}
             action={formActionUpdateListData}
           >
             <div className="flex gap-4">
@@ -344,10 +356,12 @@ export default function Modal() {
                 formattedValue="Name"
                 maxLength={50}
                 defaultValue={listData?.[0].title ?? ""}
+                disabled={!listDataEditable}
               ></InputBox>
               <IconSelectInput
                 value={"icon"}
                 defaultValue={listData?.[0].icon ?? ""}
+                disabled={!listDataEditable}
               ></IconSelectInput>
             </div>
             <InputBox
@@ -356,43 +370,53 @@ export default function Modal() {
               formattedValue="Description"
               maxLength={150}
               defaultValue={listData?.[0].description ?? ""}
+              disabled={!listDataEditable}
             ></InputBox>
-            <InviteGenerateInput
-              value="sharelink"
-              formattedValue="Share link"
-              defaultValue={
-                window.location.origin + "/invite/" + listInviteData?.[0]?.id ??
-                ""
-              }
-              listid={listData?.[0].id ?? ""}
-              defaultHasInviteLink={listInviteData?.[0]?.id !== undefined}
-            ></InviteGenerateInput>
+            {listDataEditable ? (
+              <InviteGenerateInput
+                value="sharelink"
+                formattedValue="Share link"
+                defaultValue={
+                  window.location.origin +
+                    "/invite/" +
+                    listInviteData?.[0]?.id ?? ""
+                }
+                listid={listData?.[0].id ?? ""}
+                defaultHasInviteLink={listInviteData?.[0]?.id !== undefined}
+              ></InviteGenerateInput>
+            ) : null}
             <CheckMarkInput
               value={"deleteOnComplete"}
               displayValue="Delete items on complete"
               defaultValue={listData?.[0].delete_on_complete}
+              disabled={!listDataEditable}
             ></CheckMarkInput>
             {listMemberData && (
-              <ListMembersInput listMembers={listMemberData}></ListMembersInput>
+              <ListMembersInput
+                listMembers={listMemberData}
+                disabled={!listDataEditable}
+              ></ListMembersInput>
             )}
             <input type="hidden" value={listId} name="listId"></input>
-            <div className="flex gap-4 w-fit mx-auto">
-              <SubmitButton />
-              <button
-                className="mt-6 py-2 px-8 hover:bg-red w-fit h-fit mx-auto rounded-full flex gap-1 bg-transparent border-red border-2 transition disabled:opacity-50 disabled:bg-transparent"
-                formAction={formActionDeleteList}
-                type="submit"
-                onClick={() => {
-                  const newPathnameFolder = pathname.slice(
-                    0,
-                    pathname.lastIndexOf("/")
-                  );
-                  router.push(newPathnameFolder);
-                }}
-              >
-                <p className="m-auto text-lg">Delete</p>
-              </button>
-            </div>
+            {listDataEditable ? (
+              <div className="flex gap-4 w-fit mx-auto">
+                <SubmitButton />
+                <button
+                  className="mt-6 py-2 px-8 hover:bg-red w-fit h-fit mx-auto rounded-full flex gap-1 bg-transparent border-red border-2 transition disabled:opacity-50 disabled:bg-transparent"
+                  formAction={formActionDeleteList}
+                  type="submit"
+                  onClick={() => {
+                    const newPathnameFolder = pathname.slice(
+                      0,
+                      pathname.lastIndexOf("/")
+                    );
+                    router.push(newPathnameFolder);
+                  }}
+                >
+                  <p className="m-auto text-lg">Delete</p>
+                </button>
+              </div>
+            ) : null}
           </form>
         ) : null}
         {editFolderModal && !folderDataLoading ? (

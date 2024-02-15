@@ -5,9 +5,14 @@ import EmojiPanel from "./EmojiPanel";
 interface selectInputProps {
   value: string;
   defaultValue: string;
+  disabled?: boolean;
 }
 
-const IconSelectInput = ({ value, defaultValue }: selectInputProps) => {
+const IconSelectInput = ({
+  value,
+  defaultValue,
+  disabled,
+}: selectInputProps) => {
   const [inputValue, setInputValue] = useState(defaultValue);
   const [isemojiPanelOpen, setIsemojiPanelOpen] = useState(false);
   const emojiPanelRef = useRef<HTMLDivElement>(null);
@@ -39,7 +44,9 @@ const IconSelectInput = ({ value, defaultValue }: selectInputProps) => {
   return (
     <div className="relative">
       <div
-        className="flex w-[51px] h-[51px] bg-primary-bg rounded-full cursor-pointer hover:opacity-80 transition"
+        className={`flex w-[51px] h-[51px] bg-primary-bg rounded-full cursor-pointer hover:opacity-80 transition ${
+          disabled ? "opacity-100 pointer-events-none" : ""
+        }`}
         onClick={() => setIsemojiPanelOpen(!isemojiPanelOpen)}
       >
         <input
@@ -48,6 +55,7 @@ const IconSelectInput = ({ value, defaultValue }: selectInputProps) => {
           name={value}
           value={inputValue}
           onChange={handleChange}
+          disabled={disabled}
         />
         <p className="m-auto text-2xl align-middle">{inputValue}</p>
       </div>
