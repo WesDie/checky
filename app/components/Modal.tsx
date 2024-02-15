@@ -21,8 +21,7 @@ import {
   useGetSingleList,
   useDeleteList,
   useGetAllTagsFromList,
-  useDeleteTagRow,
-  useAddTagRow,
+  useToggleTagRow,
 } from "@/lib/hooks/useSupabase";
 import CheckMarkInput from "./CheckmarkInput";
 import ListMembersInput from "./ListMembersInput";
@@ -174,11 +173,7 @@ export default function Modal() {
     itemid: string,
     isSelected: boolean
   ) => {
-    if (isSelected) {
-      useDeleteTagRow(tagId, listId);
-    } else {
-      useAddTagRow(tagId, listId, itemid);
-    }
+    useToggleTagRow(tagId, listId, itemid, isSelected);
   };
 
   useEffect(() => {

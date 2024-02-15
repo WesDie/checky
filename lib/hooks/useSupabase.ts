@@ -1014,37 +1014,11 @@ export async function useDeleteList(
   return { message: "Green: List deleted successfully" };
 }
 
-export async function useDeleteTagRow(tagid: string, listid: string) {
-  const { supabase, session } = await checkUser();
-  const { isListMember } = await checkIfUserIsListMember(
-    listid,
-    session,
-    supabase
-  );
-
-  if (!isListMember) {
-    return { message: "Red: You are not a member of this list" };
-  }
-
-  const { error } = await supabase
-    .from("lists_tags")
-    .delete()
-    .eq("listid", listid)
-    .eq("id", tagid);
-
-  if (error) {
-    return;
-  }
-
-  revalidatePath("/");
-  updateDateForList(listid);
-  return;
-}
-
-export async function useAddTagRow(
+export async function useToggleTagRow(
   tagid: string,
   listid: string,
-  itemid: string
+  itemid: string,
+  isSelected: boolean
 ) {
   const { supabase, session } = await checkUser();
   const { isListMember } = await checkIfUserIsListMember(
@@ -1055,6 +1029,22 @@ export async function useAddTagRow(
 
   if (!isListMember) {
     return { message: "Red: You are not a member of this list" };
+  }
+
+  if (isSelected) {
+    const { error } = await supabase
+      .from("lists_tags")
+      .delete()
+      .eq("listid", listid)
+      .eq("id", tagid);
+
+    if (error) {
+      return;
+    }
+
+    revalidatePath("/");
+    updateDateForList(listid);
+    return;
   }
 
   const { data } = await supabase
