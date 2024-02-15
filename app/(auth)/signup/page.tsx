@@ -64,6 +64,12 @@ const SignUp = () => {
                 autoComplete="email"
               ></InputBox>
               <InputBox
+                value="username"
+                type="username"
+                formattedValue="Username"
+                autoComplete=""
+              ></InputBox>
+              <InputBox
                 value="password"
                 type="password"
                 formattedValue="Password"

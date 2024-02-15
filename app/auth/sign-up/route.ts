@@ -9,6 +9,7 @@ export async function POST(request: Request) {
   const email = String(formData.get("email"));
   const password = String(formData.get("password"));
   const password2 = String(formData.get("password2"));
+  const username = String(formData.get("username"));
 
   if (!password || !password2 || !email) {
     return new Response(
@@ -59,6 +60,16 @@ export async function POST(request: Request) {
       JSON.stringify({ message: "Sign-up failed", error, data }),
       { status: 500 }
     );
+  }
+
+  if (data?.user?.id) {
+    const { error: signupError } = await supabase.from("user_profiles").insert({
+      id: data.user.id,
+      username: username,
+      profile_colors: "#ff00b5 || #2600ff",
+      theme: "dark",
+      highlight_colors: "orange",
+    });
   }
 
   return NextResponse.redirect(`${requestUrl.origin}/signin`, {
