@@ -1125,3 +1125,39 @@ export async function useDeleteListMember(userid: string, listid: string) {
   revalidatePath("/");
   return;
 }
+
+export async function useDeleteAccount() {
+  const { supabase, session } = await checkUser();
+  const userid = session?.user?.id?.toString() ?? "";
+
+  const { error } = await supabase
+    .from("lists_members")
+    .delete()
+    .eq("userid", userid);
+
+  const { error: userProfileDeleteError } = await supabase
+    .from("user_profiles")
+    .delete()
+    .eq("id", userid);
+
+  const { error: userFoldersDeleteError } = await supabase
+    .from("users_folders")
+    .delete()
+    .eq("userid", userid);
+
+  const { error: deleteUserError } = await supabase.auth.admin.deleteUser(
+    userid
+  );
+
+  if (
+    error ||
+    userProfileDeleteError ||
+    userFoldersDeleteError ||
+    deleteUserError
+  ) {
+    return { message: "Red: something went wrong" };
+  }
+
+  revalidatePath("/");
+  return { message: "Green: Account succesfully removed" };
+}

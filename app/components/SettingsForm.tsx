@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import InputBox from "./ui/InputBox";
 import SelectInput from "./SelectInput";
-import { useUpdateUserData } from "@/lib/hooks/useSupabase";
+import { useUpdateUserData, useDeleteAccount } from "@/lib/hooks/useSupabase";
 import { useFormStatus, useFormState } from "react-dom";
+import Link from "next/link";
 
 interface UserData {
   id: string;
@@ -87,6 +88,12 @@ export default function SettingsForm({
         formattedValue="Highlight Color"
         onChange={handleChange}
       />
+      <Link
+        className="border-red border-solid border-[1px] rounded-full w-fit px-4 py-2 hover:bg-red transition cursor-pointer"
+        href={"?modal=true&delete-account=true"}
+      >
+        Delete Account
+      </Link>
       <p
         className={`${
           state?.message?.startsWith("Red:") ? "text-red" : "text-green"

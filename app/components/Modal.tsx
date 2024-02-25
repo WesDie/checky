@@ -22,6 +22,7 @@ import {
   useDeleteList,
   useGetAllTagsFromList,
   useToggleTagRow,
+  useDeleteAccount,
 } from "@/lib/hooks/useSupabase";
 import CheckMarkInput from "./CheckmarkInput";
 import ListMembersInput from "./ListMembersInput";
@@ -86,6 +87,10 @@ export default function Modal() {
     useUpdateListData,
     initialState
   );
+  const [stateDeleteAccount, formActionDeleteAccount] = useFormState(
+    useDeleteAccount,
+    initialState
+  );
 
   const [itemData, setItemData] = useState<any[] | null>(null);
   const [itemTagData, setItemTagData] = useState<any[] | null>(null);
@@ -109,6 +114,7 @@ export default function Modal() {
   const editListModal = searchParams.get("edit-list");
   const editListItemModal = searchParams.get("edit-list-item");
   const addListTagModal = searchParams.get("add-list-tag");
+  const deleteAccountModal = searchParams.get("delete-account");
 
   const pathname = usePathname();
   const router = useRouter();
@@ -217,6 +223,8 @@ export default function Modal() {
               ? "Edit Folder"
               : editListModal
               ? "Edit List"
+              : deleteAccountModal
+              ? "Are you sure you want to delete this account?"
               : ""}
           </p>
           {!listDataEditable && editListModal ? (
@@ -324,6 +332,14 @@ export default function Modal() {
               maxLength={150}
             ></InputBox>
             <input type="hidden" value={listId} name="listId"></input>
+            <SubmitButton />
+          </form>
+        )}
+        {deleteAccountModal && (
+          <form
+            className="flex flex-col gap-4"
+            action={formActionDeleteAccount}
+          >
             <SubmitButton />
           </form>
         )}
