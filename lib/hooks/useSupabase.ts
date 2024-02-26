@@ -1126,6 +1126,37 @@ export async function useDeleteListMember(userid: string, listid: string) {
   return;
 }
 
+export async function useDeleteAllListItems(listid: string) {
+  const { supabase, session } = await checkUser();
+  const { isListMember } = await checkIfUserIsListMember(
+    listid,
+    session,
+    supabase
+  );
+
+  if (!isListMember) {
+    return { message: "Red: You are not a member of this list" };
+  }
+
+  const { error } = await supabase
+    .from("lists_items")
+    .delete()
+    .eq("listid", listid);
+
+  const { error: tagError } = await supabase
+    .from("lists_tags")
+    .delete()
+    .eq("listid", listid);
+
+  if (error || tagError) {
+    return { message: "Red: something went wrong" };
+  }
+
+  updateDateForList(listid);
+  revalidatePath("/");
+  return { message: "Green: All list items removed" };
+}
+
 export async function useDeleteAccount() {
   const { supabase, session } = await checkUser();
   const userid = session?.user?.id?.toString() ?? "";

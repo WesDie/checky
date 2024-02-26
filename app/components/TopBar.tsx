@@ -1,8 +1,11 @@
 "use client";
-import { EllipsisHorizontalIcon } from "@heroicons/react/24/solid";
+import {
+  EllipsisHorizontalIcon,
+  ArchiveBoxXMarkIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useGetListData } from "@/lib/hooks/useSupabase";
+import { useGetListData, useDeleteAllListItems } from "@/lib/hooks/useSupabase";
 import { useState, useEffect } from "react";
 
 export default function Topbar() {
@@ -69,9 +72,17 @@ export default function Topbar() {
               {folderName} /
             </Link>
             <p className="my-auto">{listName}</p>
+            <button
+              onClick={() => {
+                useDeleteAllListItems(pathname.split("/")[3]);
+              }}
+              className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-6 h-6 mr-4 my-auto"
+            >
+              <ArchiveBoxXMarkIcon />
+            </button>
             <Link
               href={`?modal=true&edit-list=true`}
-              className="ml-auto opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4"
+              className="opacity-50 hover:opacity-100 hover:cursor-pointer transition w-8 h-8 mr-4"
             >
               <EllipsisHorizontalIcon />
             </Link>
